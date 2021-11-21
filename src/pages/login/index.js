@@ -1,5 +1,5 @@
 // import { Link as RouterLink } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from 'react-helmet';
 import {
   Box,
   Card,
@@ -7,23 +7,23 @@ import {
   Container,
   Divider,
   Link,
-  Typography,
-} from "@mui/material";
+  Typography
+} from '@mui/material';
 // import AuthBanner from "components/authentication/AuthBanner";
 import {
   LoginAmplify,
   LoginAuth0,
   LoginFirebase,
-  LoginJWT,
-} from "src/components/authentication/login";
+  LoginJWT
+} from 'src/components/authentication/login';
 // import Logo from '../../components/Logo';
-import useAuth from "src/hooks/useAuth";
+import useAuth from 'src/hooks/useAuth';
 
 const platformIcons = {
-  Amplify: "/static/icons/amplify.svg",
-  Auth0: "/static/icons/auth0.svg",
-  Firebase: "/static/icons/firebase.svg",
-  JWT: "/static/jbs_logo.jpg",
+  Amplify: '/static/icons/amplify.svg',
+  Auth0: '/static/icons/auth0.svg',
+  Firebase: '/static/icons/firebase.svg',
+  JWT: '/static/jbs_logo.jpg'
 };
 
 const Login = () => {
@@ -36,19 +36,19 @@ const Login = () => {
       </Helmet>
       <Box
         sx={{
-          backgroundColor: "background.default",
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
+          backgroundColor: 'background.default',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh'
         }}
       >
         {/* <AuthBanner /> */}
-        <Container maxWidth="sm" sx={{ py: "80px" }}>
+        <Container maxWidth="sm" sx={{ py: '80px' }}>
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              mb: 8,
+              display: 'flex',
+              justifyContent: 'center',
+              mb: 8
             }}
           >
             {/* <RouterLink to="/"></RouterLink> */}
@@ -56,17 +56,17 @@ const Login = () => {
           <Card>
             <CardContent
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                p: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                p: 4
               }}
             >
               <Box
                 sx={{
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 3,
+                  alignItems: 'center',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  mb: 3
                 }}
               >
                 <div>
@@ -80,10 +80,10 @@ const Login = () => {
                 <Box
                   sx={{
                     height: 64,
-                    "& > img": {
-                      maxHeight: "100%",
-                      width: "auto",
-                    },
+                    '& > img': {
+                      maxHeight: '100%',
+                      width: 'auto'
+                    }
                   }}
                 >
                   <img alt="Auth platform" src={platformIcons[platform]} />
@@ -92,13 +92,13 @@ const Login = () => {
               <Box
                 sx={{
                   flexGrow: 1,
-                  mt: 3,
+                  mt: 3
                 }}
               >
-                {platform === "Amplify" && <LoginAmplify />}
-                {platform === "Auth0" && <LoginAuth0 />}
-                {platform === "Firebase" && <LoginFirebase />}
-                {platform === "JWT" && <LoginJWT />}
+                {platform === 'Amplify' && <LoginAmplify />}
+                {platform === 'Auth0' && <LoginAuth0 />}
+                {platform === 'Firebase' && <LoginFirebase />}
+                {platform === 'JWT' && <LoginJWT />}
               </Box>
               <Divider sx={{ my: 3 }} />
             </CardContent>
