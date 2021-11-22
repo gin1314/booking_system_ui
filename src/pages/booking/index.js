@@ -5,6 +5,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import wait from 'src/utils/wait';
 import router from 'next/router';
+import _ from 'lodash';
 import {
   Box,
   Button,
@@ -22,13 +23,16 @@ import {
 } from '@mui/material';
 import { postCreateBooking } from 'src/api';
 
-
 const moment = new MomentAdapter();
 
 const phoneRegExp =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 const Booking = (props) => {
+  const { timeSlot } = props;
+
+  console.log(timeSlot, 'slot');
+
   const { enqueueSnackbar } = useSnackbar();
   const today = new Date();
   return (
@@ -57,7 +61,9 @@ const Booking = (props) => {
             phone_no: Yup.string()
               .required('The phone number is required')
               .matches(phoneRegExp, 'The phone number is not valid'),
-            land_location: Yup.string().required('The land location is required'),
+            land_location: Yup.string().required(
+              'The land location is required'
+            ),
             survey_type: Yup.string().required('The survey type is required'),
             time_slot_id: Yup.string().required('The time slot is required')
           })}
@@ -123,13 +129,20 @@ const Booking = (props) => {
                           );
                         }}
                         renderInput={(params) => (
-                          <TextField fullWidth {...params} />
+                          <TextField
+                            fullWidth
+                            error={Boolean(
+                              touched.schedule_date && errors.schedule_date
+                            )}
+                            helperText={touched.schedule_date && errors.schedule_date}
+                            {...params}
+                          />
                         )}
                         shouldDisableDate={(day) => {
-                          return (
-                            moment.date(day).format('YYYY-MM-DD') ===
-                            '2021-11-24'
-                          );
+                          // return (
+                          //   moment.date(day).format('YYYY-MM-DD') ===
+                          //   '2021-11-24'
+                          // );
                         }}
                       />
                     </Box>
@@ -151,8 +164,11 @@ const Booking = (props) => {
                           name="time_slot_id"
                           onChange={handleChange}
                         >
-                          <MenuItem value={1}>8:00am - 11:00am</MenuItem>
-                          <MenuItem value={2}>1:00pm - 5:00pm</MenuItem>
+                          {timeSlot.map((data) => (
+                            <MenuItem value={data.id}>
+                              {data.time_slot_word}
+                            </MenuItem>
+                          ))}
                         </Select>
                         {touched.time_slot_id && errors.time_slot_id ? (
                           <FormHelperText error>
@@ -203,8 +219,7 @@ const Booking = (props) => {
                       {false ? (
                         <Alert severity="error">
                           <div>
-                            Use <b></b> and password{' '}
-                            <b>Password123!</b>
+                            Use <b></b> and password <b>Password123!</b>
                           </div>
                         </Alert>
                       ) : null}
@@ -325,6 +340,38 @@ const Booking = (props) => {
       </Container>
     </Box>
   );
+};
+
+export const getServerSideProps = async ({ req, res, query, params }) => {
+  let timeSlot;
+  try {
+    const apiResp = await fetch(`${process.env.apiBaseURLLocal}/timeslot`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json'
+      }
+    });
+
+    timeSlot = await apiResp.json();
+    console.log(timeSlot);
+    if (_.get(apiResp, 'status') >= 400) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/page-not-found'
+        }
+      };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      timeSlot: timeSlot.data
+    }
+  };
 };
 
 export default Booking;
