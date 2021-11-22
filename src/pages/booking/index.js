@@ -16,12 +16,15 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormHelperText
+  FormHelperText,
+  Alert
 } from '@mui/material';
+import { postCreateBooking } from 'src/api';
 
 const moment = new MomentAdapter();
 
-const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+const phoneRegExp =
+  /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 const Booking = (props) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -47,31 +50,33 @@ const Booking = (props) => {
             time_slot_id: ''
           }}
           validationSchema={Yup.object().shape({
-            full_name: Yup.string().required('Name is required'),
-            address: Yup.string().required('Address is required'),
+            full_name: Yup.string().required('The name field is required'),
+            address: Yup.string().required('The address is required'),
             phone_no: Yup.string()
-              .required('Phone number is required')
-              .matches(phoneRegExp, 'Phone number is not valid'),
-            land_location: Yup.string().required('Land location is required'),
-            survey_type: Yup.string().required('Survey type is required'),
-            time_slot_id: Yup.string().required('Time slot is required')
+              .required('The phone number is required')
+              .matches(phoneRegExp, 'The phone number is not valid'),
+            land_location: Yup.string().required('The land location is required'),
+            survey_type: Yup.string().required('The survey type is required'),
+            time_slot_id: Yup.string().required('The time slot is required')
           })}
           onSubmit={async (
             values,
             { resetForm, setErrors, setStatus, setSubmitting, setFieldValue }
           ) => {
             try {
+              const response = await postCreateBooking(values);
+              console.log(response, 'response');
               setStatus({ success: true });
               enqueueSnackbar('You have successfuly booked an appointment!', {
                 variant: 'success'
               });
-              // await wait(500);
-              // router.push(`/dock-receipts/${api.data.data.id}/view`);
+              await wait(500);
+              router.push(`/booking/${response.data.data.id}`);
             } catch (err) {
               console.log('error', err);
-              // setStatus({ success: false });
-              // setErrors(err.response.data.errors[0].detail);
-              // setSubmitting(false);
+              setStatus({ success: false });
+              setErrors(err.response.data.errors[0].detail);
+              setSubmitting(false);
             }
           }}
         >
@@ -134,9 +139,7 @@ const Booking = (props) => {
                       }}
                     >
                       <FormControl fullWidth>
-                        <InputLabel id="time-slot-id">
-                          Time slot
-                        </InputLabel>
+                        <InputLabel id="time-slot-id">Time slot</InputLabel>
                         <Select
                           error={Boolean(
                             touched.time_slot_id && errors.time_slot_id
@@ -149,7 +152,7 @@ const Booking = (props) => {
                           onChange={handleChange}
                         >
                           <MenuItem value={1}>8:00am - 11:00am</MenuItem>
-                          <MenuItem value={1}>1:00pm - 5:00pm</MenuItem>
+                          <MenuItem value={2}>1:00pm - 5:00pm</MenuItem>
                         </Select>
                         {touched.time_slot_id && errors.time_slot_id ? (
                           <FormHelperText error>
@@ -195,6 +198,16 @@ const Booking = (props) => {
                         onChange={handleChange}
                         value={values.address}
                       />
+                    </Box>
+                    <Box sx={{ mt: 3 }}>
+                      {false ? (
+                        <Alert severity="error">
+                          <div>
+                            Use <b></b> and password{' '}
+                            <b>Password123!</b>
+                          </div>
+                        </Alert>
+                      ) : null}
                     </Box>
                   </Grid>
                   <Grid item md={4} sm={6} xs={12}>
