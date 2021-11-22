@@ -4,6 +4,7 @@ import { useSnackbar } from 'notistack';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import wait from 'src/utils/wait';
+import router from 'next/router';
 import {
   Box,
   Button,
@@ -20,6 +21,7 @@ import {
   Alert
 } from '@mui/material';
 import { postCreateBooking } from 'src/api';
+
 
 const moment = new MomentAdapter();
 
@@ -65,15 +67,13 @@ const Booking = (props) => {
           ) => {
             try {
               const response = await postCreateBooking(values);
-              console.log(response, 'response');
               setStatus({ success: true });
               enqueueSnackbar('You have successfuly booked an appointment!', {
                 variant: 'success'
               });
               await wait(500);
-              router.push(`/booking/${response.data.data.id}`);
+              router.push(`/booking/details/${response.data.data.id}`);
             } catch (err) {
-              console.log('error', err);
               setStatus({ success: false });
               setErrors(err.response.data.errors[0].detail);
               setSubmitting(false);
