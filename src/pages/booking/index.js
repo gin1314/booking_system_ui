@@ -43,7 +43,8 @@ const Booking = (props) => {
             survey_type: '',
             schedule_date: '',
             land_location: '',
-            appointment_notes: ''
+            appointment_notes: '',
+            time_slot_id: ''
           }}
           validationSchema={Yup.object().shape({
             full_name: Yup.string().required('Name is required'),
@@ -52,7 +53,8 @@ const Booking = (props) => {
               .required('Phone number is required')
               .matches(phoneRegExp, 'Phone number is not valid'),
             land_location: Yup.string().required('Land location is required'),
-            survey_type: Yup.string().required('Survey type is required')
+            survey_type: Yup.string().required('Survey type is required'),
+            time_slot_id: Yup.string().required('Time slot is required')
           })}
           onSubmit={async (
             values,
@@ -131,14 +133,30 @@ const Booking = (props) => {
                         mt: 2
                       }}
                     >
-                      <Box>
-                        <Stack direction="row" spacing={2}>
-                          <Button variant="contained">
-                            8:00 am - 11:00 am
-                          </Button>
-                          <Button variant="contained">1:00 pm - 5pm</Button>
-                        </Stack>
-                      </Box>
+                      <FormControl fullWidth>
+                        <InputLabel id="time-slot-id">
+                          Time slot
+                        </InputLabel>
+                        <Select
+                          error={Boolean(
+                            touched.time_slot_id && errors.time_slot_id
+                          )}
+                          labelId="survey-type-id"
+                          id="survey-type"
+                          value={values.time_slot_id}
+                          label="Time slot"
+                          name="time_slot_id"
+                          onChange={handleChange}
+                        >
+                          <MenuItem value={1}>8:00am - 11:00am</MenuItem>
+                          <MenuItem value={1}>1:00pm - 5:00pm</MenuItem>
+                        </Select>
+                        {touched.time_slot_id && errors.time_slot_id ? (
+                          <FormHelperText error>
+                            {errors.time_slot_id}
+                          </FormHelperText>
+                        ) : null}
+                      </FormControl>
                     </Box>
                     <Box
                       sx={{
