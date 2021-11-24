@@ -31,8 +31,6 @@ const phoneRegExp =
 const Booking = (props) => {
   const { timeSlot } = props;
 
-  console.log(timeSlot, 'slot');
-
   const { enqueueSnackbar } = useSnackbar();
   const today = new Date();
   return (
@@ -354,7 +352,7 @@ export const getServerSideProps = async ({ req, res, query, params }) => {
     });
 
     timeSlot = await apiResp.json();
-    console.log(timeSlot);
+
     if (_.get(apiResp, 'status') >= 400) {
       return {
         redirect: {
