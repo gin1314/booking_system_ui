@@ -99,14 +99,14 @@ const Booking = (props) => {
                 <Typography color="textPrimary" variant="h5">
                   Fill-up the form to book an appointment
                 </Typography>
-                <Typography
+                {/* <Typography
                   color="textSecondary"
                   sx={{ py: 2 }}
                   variant="body1"
                 >
                   Proin tincidunt lacus sed ante efficitur efficitur. Quisque
                   aliquam fringilla velit sit amet euismod.
-                </Typography>
+                </Typography> */}
                 <Grid container spacing={3}>
                   <Grid item md={4} sm={6} xs={12}>
                     <Box
