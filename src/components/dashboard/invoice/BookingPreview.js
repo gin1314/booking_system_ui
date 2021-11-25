@@ -37,139 +37,133 @@ const BookingPreview = (props) => {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography align="right" color="textPrimary" variant="h4">
+              <Typography color="textPrimary" variant="h4">
                 {''}
               </Typography>
-              <Typography align="right" color="textPrimary" variant="subtitle2">
+              <Typography color="textPrimary" variant="subtitle2">
                 Invoice # {booking.data.id}
               </Typography>
             </Grid>
           </Grid>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>{/* Description */}</TableCell>
-                {/* <TableCell /> */}
-                <TableCell align="right">{/* Unit Price */}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Survey date
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  {moment
-                    .date(booking.data.schedule_date)
-                    .format('MMMM D, YYYY')}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Time
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  {booking.data.time_slot_word}
-                </TableCell>
-              </TableRow>
+          <Grid>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{/* Description */}</TableCell>
+                  {/* <TableCell /> */}
+                  <TableCell>{/* Unit Price */}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Survey date
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    {moment
+                      .date(booking.data.schedule_date)
+                      .format('MMMM D, YYYY')}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Time
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{booking.data.time_slot_word}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Name
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">{booking.data.full_name}</TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Name
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{booking.data.full_name}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Address
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">{booking.data.address}</TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Address
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{booking.data.address}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Phone no
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">{booking.data.phone_no}</TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Phone no
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{booking.data.phone_no}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Kind of survey
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  {booking.data.survey_type_word}
-                </TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Kind of survey
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{booking.data.survey_type_word}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Land location
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  {booking.data.land_location}
-                </TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Land location
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{booking.data.land_location}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell>
-                  <Typography
-                    color="textPrimary"
-                    gutterBottom
-                    variant="subtitle2"
-                  >
-                    Apointment notes
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  {booking.data.appointment_notes}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                <TableRow>
+                  <TableCell>
+                    <Typography
+                      color="textPrimary"
+                      gutterBottom
+                      variant="subtitle2"
+                    >
+                      Apointment notes
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{booking.data.appointment_notes}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Grid>
           {/* <Box sx={{ mt: 2 }}>
             <Typography
               color="textPrimary"
@@ -195,7 +189,6 @@ const BookingPreview = (props) => {
 };
 
 BookingPreview.propTypes = {
-  // @ts-ignore
   booking: PropTypes.object.isRequired
 };
 
