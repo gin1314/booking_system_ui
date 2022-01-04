@@ -33,6 +33,7 @@ export default function MyApp(props) {
     <CacheProvider value={emotionCache}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <SnackbarProvider dense maxSnack={3}>
             <AuthProvider>
