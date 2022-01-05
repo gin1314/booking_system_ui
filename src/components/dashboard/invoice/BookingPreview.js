@@ -18,6 +18,8 @@ import Scrollbar from '../../Scrollbar';
 
 const moment = new MomentAdapter();
 
+const joinAddress = (arr) => arr.join(', ');
+
 const BookingPreview = (props) => {
   const { booking, ...other } = props;
   return (
@@ -94,7 +96,7 @@ const BookingPreview = (props) => {
                       Name
                     </Typography>
                   </TableCell>
-                  <TableCell>{booking.data.full_name}</TableCell>
+                  <TableCell>{`${booking.data.first_name} ${booking.data.last_name}`}</TableCell>
                 </TableRow>
 
                 <TableRow>
@@ -107,7 +109,14 @@ const BookingPreview = (props) => {
                       Address
                     </Typography>
                   </TableCell>
-                  <TableCell>{booking.data.address}</TableCell>
+                  <TableCell>
+                    {joinAddress([
+                      booking.data.client_street,
+                      booking.data.client_city,
+                      booking.data.client_region,
+                      booking.data.client_postal_code
+                    ])}
+                  </TableCell>
                 </TableRow>
 
                 <TableRow>
@@ -146,7 +155,14 @@ const BookingPreview = (props) => {
                       Land location
                     </Typography>
                   </TableCell>
-                  <TableCell>{booking.data.land_location}</TableCell>
+                  <TableCell>
+                    {joinAddress([
+                      booking.data.land_street,
+                      booking.data.land_city,
+                      booking.data.land_region,
+                      booking.data.land_postal_code
+                    ])}
+                  </TableCell>
                 </TableRow>
 
                 <TableRow>
