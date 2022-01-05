@@ -55,8 +55,11 @@ const getStatusLabel = (paymentStatus) => {
 const applyPagination = (orders, page, limit) =>
   orders.slice(page * limit, page * limit + limit);
 
+const joinAddress = (arr) => arr.join(', ');
+
 const BookingListTable = (props) => {
-  const { orders, ...other } = props;
+  const { orders, bookings, ...other } = props;
+  console.log(bookings, 'book');
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
@@ -101,17 +104,18 @@ const BookingListTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
+                {/* <TableCell padding="checkbox">
                   <Checkbox
                     checked={selectedAllOrders}
                     color="primary"
                     indeterminate={selectedSomeOrders}
                     onChange={handleSelectAllOrders}
                   />
-                </TableCell>
+                </TableCell> */}
                 <TableCell>Booking Schedule</TableCell>
                 <TableCell>Customer</TableCell>
                 <TableCell>Survey Type</TableCell>
+                <TableCell>Address of survey land</TableCell>
                 {/* <TableCell>
                     Total
                   </TableCell> */}
@@ -120,7 +124,7 @@ const BookingListTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedOrders.map((order) => {
+              {bookings.data.map((order) => {
                 const isOrderSelected = selectedOrders.includes(order.id);
 
                 return (
@@ -129,7 +133,7 @@ const BookingListTable = (props) => {
                     key={order.id}
                     selected={selectedOrders.indexOf(order.id) !== -1}
                   >
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={isOrderSelected}
                         color="primary"
@@ -138,38 +142,42 @@ const BookingListTable = (props) => {
                         }
                         value={isOrderSelected}
                       />
+                    </TableCell> */}
+                    <TableCell>
+                      <Typography color="textPrimary" variant="subtitle2">
+                        {order.schedule_date}
+                      </Typography>
+                      <Typography color="textSecondary" variant="body2">
+                        {order.timeslot.time_slot_word}
+                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography color="textPrimary" variant="subtitle2">
-                        {order.number}
+                        {`${order.first_name} ${order.last_name}`}
                       </Typography>
                       <Typography color="textSecondary" variant="body2">
-                        {format(order.createdAt, 'dd MMM yyyy | HH:mm')}
+                        {order.phone_no}
                       </Typography>
                     </TableCell>
+                    <TableCell>{order.survey_type}</TableCell>
                     <TableCell>
-                      <Typography color="textPrimary" variant="subtitle2">
-                        {order.customer.name}
-                      </Typography>
-                      <Typography color="textSecondary" variant="body2">
-                        {order.customer.email}
-                      </Typography>
+                      {joinAddress([
+                        order.land_street,
+                        order.land_city,
+                        order.land_region,
+                        order.land_postal_code
+                      ])}
                     </TableCell>
-                    <TableCell>{order.paymentMethod}</TableCell>
-                    {/* <TableCell>
-                        {numeral(order.totalAmount)
-                          .format(`${order.currency}0,0.00`)}
-                      </TableCell> */}
                     <TableCell>{getStatusLabel(order.status)}</TableCell>
                     <TableCell align="right">
                       <IconButton>
                         <PencilAltIcon fontSize="small" />
                       </IconButton>
-                      <NextLink href="order/dasd">
-                        <IconButton>
-                          <ArrowRightIcon fontSize="small" />
-                        </IconButton>
-                      </NextLink>
+                      {/* <NextLink href="order/dasd"> */}
+                      <IconButton>
+                        <ArrowRightIcon fontSize="small" />
+                      </IconButton>
+                      {/* </NextLink> */}
                     </TableCell>
                   </TableRow>
                 );
@@ -197,7 +205,8 @@ const BookingListTable = (props) => {
 };
 
 BookingListTable.propTypes = {
-  orders: PropTypes.array.isRequired
+  orders: PropTypes.array.isRequired,
+  bookings: PropTypes.array.isRequired
 };
 
 export default BookingListTable;

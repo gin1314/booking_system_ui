@@ -12,7 +12,7 @@ import PlusIcon from 'src/icons/Plus';
 // import gtm from '../../lib/gtm';
 import axios from 'src/lib/axios';
 
-const BookingList = () => {
+const BookingList = ({ bookings }) => {
   const isMountedRef = useIsMountedRef();
   const { settings } = useSettings();
   const [orders, setOrders] = useState([]);
@@ -129,12 +129,50 @@ const BookingList = () => {
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            <BookingListTable orders={orders} />
+            <BookingListTable orders={orders} bookings={bookings}/>
           </Box>
         </Container>
       </Box>
     </>
   );
+};
+
+export const getServerSideProps = async ({ req }) => {
+  const {
+    cookies: { token }
+  } = req;
+  let bookings;
+  try {
+    const apiResp = await fetch(
+      `${process.env.apiBaseURLLocal}/booking`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          Accept: 'application/json'
+        }
+      }
+    );
+
+    bookings = await apiResp.json();
+
+    if (_.get(apiResp, 'status') >= 400) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/page-not-found'
+        }
+      }
+    }
+  } catch (error) {
+    console.error('erroerrr');
+  }
+
+  return {
+    props: {
+      bookings
+    }
+  };
 };
 
 export default BookingList;

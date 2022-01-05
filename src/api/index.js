@@ -51,6 +51,10 @@ const postCreateBooking = (params = {}) => {
   return iAxios.post('/booking', params);
 };
 
+const getAllBookings = (params = {}) => {
+  return iAxios.get(`/booking`, { params });
+};
+
 const getUserProfileImage = (userId, params = {}) => {
   return iAxios.get(`/users/${userId}/profile-image`, { params });
 };
@@ -60,6 +64,7 @@ const postAddUserToDepartment = (userId, departmentId, params = {}) => {
 };
 
 export {
+  getAllBookings,
   postCreateBooking
 };
 export default iAxios;

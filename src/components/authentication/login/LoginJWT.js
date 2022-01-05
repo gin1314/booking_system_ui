@@ -38,7 +38,7 @@ const LoginJWT = (props) => {
             setStatus({ success: true });
             setSubmitting(false);
           }
-          router.push('/booking');
+          router.push('/booking-list');
         } catch (err) {
           Cookie.remove('token');
           if (isMountedRef.current) {
