@@ -41,16 +41,16 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <DashboardLayoutRoot>
-      <DashboardNavbar onSidebarMobileOpen={() => setIsSidebarMobileOpen(true)} />
+      <DashboardNavbar
+        onSidebarMobileOpen={() => setIsSidebarMobileOpen(true)}
+      />
       <DashboardSidebar
         onMobileClose={() => setIsSidebarMobileOpen(false)}
         openMobile={isSidebarMobileOpen}
       />
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
-          <DashboardLayoutContent>
-            {children}
-          </DashboardLayoutContent>
+          <DashboardLayoutContent>{children}</DashboardLayoutContent>
         </DashboardLayoutContainer>
       </DashboardLayoutWrapper>
     </DashboardLayoutRoot>

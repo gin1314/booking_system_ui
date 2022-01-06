@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 // import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Avatar, Box, Button, Divider, Drawer, Hidden, Link, Typography } from '@mui/material';
@@ -33,15 +33,15 @@ const sections = [
         title: 'User Management',
         path: '/dashboard/analytics',
         icon: <UsersIcon fontSize="small" />
-      },
+      }
     ]
   }
 ];
 
 const DashboardSidebar = (props) => {
   const { onMobileClose, openMobile } = props;
-  // const location = useLocation();
   const { user } = useAuth();
+
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();

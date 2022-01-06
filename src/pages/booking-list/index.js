@@ -12,7 +12,7 @@ import PlusIcon from 'src/icons/Plus';
 // import gtm from '../../lib/gtm';
 import axios from 'src/lib/axios';
 import DashboardLayout from 'src/components/dashboard/DashboardLayout';
-
+import _ from 'lodash';
 
 const BookingList = ({ bookings }) => {
   const isMountedRef = useIsMountedRef();
@@ -159,7 +159,6 @@ export const getServerSideProps = async ({ req }) => {
     );
 
     bookings = await apiResp.json();
-
     if (_.get(apiResp, 'status') >= 400) {
       return {
         redirect: {
@@ -169,7 +168,7 @@ export const getServerSideProps = async ({ req }) => {
       }
     }
   } catch (error) {
-    console.error('erroerrr');
+    console.error(error);
   }
 
   return {

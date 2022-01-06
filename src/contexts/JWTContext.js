@@ -6,7 +6,7 @@ import jwtDecode from 'jwt-decode';
 const initialState = {
   isAuthenticated: false,
   isInitialized: false,
-  user: null
+  user: {}
 };
 
 const isValidToken = accessToken => {
@@ -91,7 +91,6 @@ export const AuthProvider = (props) => {
 
           const response = await axios.get('/auth/me');
           const { user } = response.data;
-
           dispatch({
             type: 'INITIALIZE',
             payload: {
@@ -130,7 +129,6 @@ export const AuthProvider = (props) => {
     });
 
     const { access_token: accessToken, user } = response.data;
-    console.log(response.data, 'response data');
     setSession(accessToken);
     dispatch({
       type: 'LOGIN',
