@@ -33,7 +33,7 @@ const LoginJWT = (props) => {
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
           const loginResponse = await login(values.email, values.password);
-          Cookie.set('token', loginResponse.access_token);
+          Cookie.set('token', loginResponse.data.access_token);
           if (isMountedRef.current) {
             setStatus({ success: true });
             setSubmitting(false);

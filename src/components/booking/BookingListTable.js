@@ -59,7 +59,6 @@ const joinAddress = (arr) => arr.join(', ');
 
 const BookingListTable = (props) => {
   const { orders, bookings, ...other } = props;
-  console.log(bookings, 'book');
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
@@ -206,7 +205,7 @@ const BookingListTable = (props) => {
 
 BookingListTable.propTypes = {
   orders: PropTypes.array.isRequired,
-  bookings: PropTypes.array.isRequired
+  bookings: PropTypes.object.isRequired
 };
 
 export default BookingListTable;

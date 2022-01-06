@@ -17,6 +17,7 @@ import 'src/__mocks__';
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
+const EmptyLayout = ({ children }) => <>{children}</>;
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
@@ -29,6 +30,8 @@ export default function MyApp(props) {
     theme: settings.theme
   });
 
+  const Layout = Component.Layout || EmptyLayout;
+
   return (
     <CacheProvider value={emotionCache}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -38,7 +41,9 @@ export default function MyApp(props) {
           <SnackbarProvider dense maxSnack={3}>
             <AuthProvider>
               <GlobalStyles />
-              <Component {...pageProps} />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
             </AuthProvider>
           </SnackbarProvider>
         </ThemeProvider>

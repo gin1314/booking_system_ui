@@ -11,6 +11,8 @@ import UploadIcon from 'src/icons/Upload';
 import PlusIcon from 'src/icons/Plus';
 // import gtm from '../../lib/gtm';
 import axios from 'src/lib/axios';
+import DashboardLayout from 'src/components/dashboard/DashboardLayout';
+
 
 const BookingList = ({ bookings }) => {
   const isMountedRef = useIsMountedRef();
@@ -136,6 +138,8 @@ const BookingList = ({ bookings }) => {
     </>
   );
 };
+
+BookingList.Layout = DashboardLayout;
 
 export const getServerSideProps = async ({ req }) => {
   const {

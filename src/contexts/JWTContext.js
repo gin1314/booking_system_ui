@@ -1,13 +1,23 @@
 import { createContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-// import axios from '../lib/axios';
 import axios from 'src/api';
-import { verify, JWT_SECRET } from '../utils/jwt';
+import jwtDecode from 'jwt-decode';
 
 const initialState = {
   isAuthenticated: false,
   isInitialized: false,
   user: null
+};
+
+const isValidToken = accessToken => {
+  if (!accessToken) {
+    return false;
+  }
+
+  const decoded = jwtDecode(accessToken);
+  const currentTime = Date.now() / 1000;
+
+  return decoded.exp > currentTime;
 };
 
 const setSession = (accessToken) => {
@@ -76,8 +86,7 @@ export const AuthProvider = (props) => {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
-
-        if (accessToken && verify(accessToken, JWT_SECRET)) {
+        if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
 
           const response = await axios.get('/auth/me');
@@ -121,7 +130,7 @@ export const AuthProvider = (props) => {
     });
 
     const { access_token: accessToken, user } = response.data;
-
+    console.log(response.data, 'response data');
     setSession(accessToken);
     dispatch({
       type: 'LOGIN',
