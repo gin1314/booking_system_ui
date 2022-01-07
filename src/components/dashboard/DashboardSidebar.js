@@ -1,7 +1,17 @@
 import { useEffect, useContext } from 'react';
 // import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Avatar, Box, Button, Divider, Drawer, Hidden, Link, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  Hidden,
+  Link,
+  Typography
+} from '@mui/material';
+import _ from 'lodash';
 import { Receipt as ReceiptIcon } from '@mui/icons-material';
 import useAuth from '../../hooks/useAuth';
 import ShoppingBagIcon from '../../icons/ShoppingBag';
@@ -9,8 +19,7 @@ import UserIcon from '../../icons/User';
 import UsersIcon from '../../icons/Users';
 import NavSection from '../NavSection';
 import Scrollbar from '../Scrollbar';
-
-const sections = [
+const adminSections = [
   {
     title: 'General',
     items: [
@@ -19,20 +28,43 @@ const sections = [
         path: '/booking-list',
         icon: <ReceiptIcon fontSize="small" />
       },
-      {
-        title: 'Billing',
-        path: '/dashboard/finance',
-        icon: <ShoppingBagIcon fontSize="small" />
-      },
-      {
-        title: 'Engineers',
-        path: '/dashboard/account',
-        icon: <UserIcon fontSize="small" />
-      },
+      // {
+      //   title: 'Billing',
+      //   path: '/dashboard/finance',
+      //   icon: <ShoppingBagIcon fontSize="small" />
+      // },
+      // {
+      //   title: 'Engineers',
+      //   path: '/dashboard/account',
+      //   icon: <UserIcon fontSize="small" />
+      // },
       {
         title: 'User Management',
         path: '/dashboard/analytics',
-        icon: <UsersIcon fontSize="small" />
+        icon: <UsersIcon fontSize="small" />,
+        children: [
+          {
+            title: 'Create User',
+            path: '/dashboard/customers'
+          },
+          {
+            title: 'List User',
+            path: '/dashboard/customers/1'
+          }
+        ]
+      }
+    ]
+  }
+];
+
+const engrSections = [
+  {
+    title: 'General',
+    items: [
+      {
+        title: 'Bookings / Transactions',
+        path: '/booking-list',
+        icon: <ReceiptIcon fontSize="small" />
       }
     ]
   }
@@ -41,12 +73,28 @@ const sections = [
 const DashboardSidebar = (props) => {
   const { onMobileClose, openMobile } = props;
   const { user } = useAuth();
+  let sections = engrSections;
+  useEffect(
+    () => {
+      if (openMobile && onMobileClose) {
+        onMobileClose();
+      }
+    },
+    [
+      /* location.pathname */
+    ]
+  );
 
-  useEffect(() => {
-    if (openMobile && onMobileClose) {
-      onMobileClose();
-    }
-  }, [/* location.pathname */]);
+  switch (_.get(user, 'role')) {
+    case 'admin':
+      sections = adminSections;
+      break;
+    case 'engineer':
+      sections = engrSections;
+      break;
+    default:
+      break;
+  }
 
   const content = (
     <Box
@@ -97,18 +145,11 @@ const DashboardSidebar = (props) => {
               />
             </RouterLink> */}
             <Box sx={{ ml: 2 }}>
-              <Typography
-                color="textPrimary"
-                variant="subtitle2"
-              >
+              <Typography color="textPrimary" variant="subtitle2">
                 {user.name}
               </Typography>
-              <Typography
-                color="textSecondary"
-                variant="body2"
-              >
-                System Role:
-                {' '}
+              <Typography color="textSecondary" variant="body2">
+                System Role:{' '}
                 <Link
                   color="primary"
                   // component={RouterLink}

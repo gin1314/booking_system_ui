@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 // import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Box, Breadcrumbs, Button, Container, Grid, Link, Typography } from '@mui/material';
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Container,
+  Grid,
+  Link,
+  Typography
+} from '@mui/material';
 import { BookingListTable } from 'src/components/booking';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 import useSettings from 'src/hooks/useSettings';
@@ -14,14 +22,10 @@ import axios from 'src/lib/axios';
 import DashboardLayout from 'src/components/dashboard/DashboardLayout';
 import _ from 'lodash';
 
-const BookingList = ({ bookings }) => {
+const BookingList = ({ bookings, user }) => {
   const isMountedRef = useIsMountedRef();
   const { settings } = useSettings();
   const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    // gtm.push({ event: 'page_view' });
-  }, []);
 
   const getOrders = useCallback(async () => {
     try {
@@ -31,6 +35,7 @@ const BookingList = ({ bookings }) => {
         setOrders(response.data.orders);
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
     }
   }, [isMountedRef]);
@@ -42,7 +47,7 @@ const BookingList = ({ bookings }) => {
   return (
     <>
       <Helmet>
-        <title>Dashboard:  Booking List (Admin)</title>
+        <title>Dashboard: Booking List (Admin)</title>
       </Helmet>
       <Box
         sx={{
@@ -52,16 +57,9 @@ const BookingList = ({ bookings }) => {
         }}
       >
         <Container maxWidth={settings.compact ? 'xl' : false}>
-          <Grid
-            container
-            justifyContent="space-between"
-            spacing={3}
-          >
+          <Grid container justifyContent="space-between" spacing={3}>
             <Grid item>
-              <Typography
-                color="textPrimary"
-                variant="h5"
-              >
+              <Typography color="textPrimary" variant="h5">
                 Booking List
               </Typography>
               {/* <Breadcrumbs
@@ -131,7 +129,7 @@ const BookingList = ({ bookings }) => {
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            <BookingListTable orders={orders} bookings={bookings}/>
+            <BookingListTable orders={orders} bookings={bookings} />
           </Box>
         </Container>
       </Box>
@@ -146,35 +144,45 @@ export const getServerSideProps = async ({ req }) => {
     cookies: { token }
   } = req;
   let bookings;
+  let user;
   try {
-    const apiResp = await fetch(
-      `${process.env.apiBaseURLLocal}/booking`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`
-        }
+    const apiResp = await fetch(`${process.env.apiBaseURLLocal}/booking`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`
       }
-    );
+    });
+
+    const apiRespMe = await fetch(`${process.env.apiBaseURLLocal}/auth/me`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    });
 
     bookings = await apiResp.json();
+    user = await apiRespMe.json();
     if (_.get(apiResp, 'status') >= 400) {
       return {
         redirect: {
           permanent: false,
           destination: '/login'
         }
-      }
+      };
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 
   return {
     props: {
-      bookings
+      bookings,
+      user
     }
   };
 };

@@ -64,8 +64,39 @@ const applyPagination = (orders, page, limit) =>
 
 const joinAddress = (arr) => arr.join(', ');
 
+const SetStatusSelect = ({ bookingId, status }) => {
+  const [selected, setSelected] = useState(status);
+  const handleChange = (event) => {
+    setSelected(event.target.value);
+  }
+
+  return (
+    <FormControl fullWidth>
+      <InputLabel id="booking-select-status">Status</InputLabel>
+      <Select
+        labelId="booking-select-status"
+        value={selected}
+        label="Status"
+        onChange={handleChange}
+        size="small"
+      >
+        <MenuItem value={'pending'}>Pending</MenuItem>
+        <MenuItem value={'confirmed'}>Confirm</MenuItem>
+        <MenuItem value={'completed'}>Completed</MenuItem>
+        <MenuItem value={'cancelled'}>Candelled</MenuItem>
+      </Select>
+    </FormControl>
+  );
+};
+/**
+ * Booking label component
+ * @param {*} props
+ * @returns null
+ */
 const BookingListTable = (props) => {
   const { orders, bookings, ...other } = props;
+  const [bookingsState, setBookingsState] = useState(bookings);
+
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
@@ -104,7 +135,7 @@ const BookingListTable = (props) => {
   return (
     <>
       <Card {...other}>
-        <CardHeader action={<div />} title="Orders" />
+        <CardHeader action={<div />} title="Bookings" />
         <Divider />
         {/* <Scrollbar> */}
         <Box sx={{ minWidth: 1150 }}>
@@ -132,14 +163,14 @@ const BookingListTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {bookings.data.map((order) => {
-                const isOrderSelected = selectedOrders.includes(order.id);
+              {bookings.data.map((booking) => {
+                const isBookingSelected = selectedOrders.includes(booking.id);
 
                 return (
                   <TableRow
                     hover
-                    key={order.id}
-                    selected={selectedOrders.indexOf(order.id) !== -1}
+                    key={booking.id}
+                    selected={selectedOrders.indexOf(booking.id) !== -1}
                   >
                     {/* <TableCell padding="checkbox">
                       <Checkbox
@@ -153,48 +184,32 @@ const BookingListTable = (props) => {
                     </TableCell> */}
                     <TableCell>
                       <Typography color="textPrimary" variant="subtitle2">
-                        {order.schedule_date}
+                        {booking.schedule_date}
                       </Typography>
                       <Typography color="textSecondary" variant="body2">
-                        {order.timeslot.time_slot_word}
+                        {booking.timeslot.time_slot_word}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography color="textPrimary" variant="subtitle2">
-                        {`${order.first_name} ${order.last_name}`}
+                        {`${booking.first_name} ${booking.last_name}`}
                       </Typography>
                       <Typography color="textSecondary" variant="body2">
-                        {order.phone_no}
+                        {booking.phone_no}
                       </Typography>
                     </TableCell>
-                    <TableCell>{order.survey_type}</TableCell>
+                    <TableCell>{booking.survey_type}</TableCell>
                     <TableCell>
                       {joinAddress([
-                        order.land_street,
-                        order.land_city,
-                        order.land_region,
-                        order.land_postal_code
+                        booking.land_street,
+                        booking.land_city,
+                        booking.land_region,
+                        booking.land_postal_code
                       ])}
                     </TableCell>
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Age
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={'pending'}
-                          label="Age"
-                          onChange={() => {}}
-                          size='small'
-                        >
-                          <MenuItem value={'pending'}>Pending</MenuItem>
-                          <MenuItem value={'completed'}>Completed</MenuItem>
-                          <MenuItem value={'cancelled'}>Candelled</MenuItem>
-                        </Select>
-                      </FormControl>
+                      <SetStatusSelect bookingId={booking.id} status={booking.status}/>
                     </TableCell>
                     <TableCell align="right">
                       <IconButton>
