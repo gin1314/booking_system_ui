@@ -153,7 +153,8 @@ export const getServerSideProps = async ({ req }) => {
         method: 'GET',
         mode: 'cors',
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`
         }
       }
     );
@@ -163,7 +164,7 @@ export const getServerSideProps = async ({ req }) => {
       return {
         redirect: {
           permanent: false,
-          destination: '/page-not-found'
+          destination: '/login'
         }
       }
     }

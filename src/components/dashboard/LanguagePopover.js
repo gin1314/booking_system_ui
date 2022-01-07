@@ -73,7 +73,7 @@ const LanguagePopover = () => {
           horizontal: 'center',
           vertical: 'bottom'
         }}
-        getContentAnchorEl={null}
+        // getContentAnchorEl={null}
         keepMounted
         onClose={handleClose}
         open={open}

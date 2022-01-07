@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 
-const LabelRoot = styled('span')((({ theme, styleProps }) => {
-  const backgroundColor = theme.palette[styleProps.color].main;
-  const color = theme.palette[styleProps.color].contrastText;
+const LabelRoot = styled('span')((({ theme, styleprops }) => {
+  const backgroundColor = theme.palette[styleprops.color].main;
+  const color = theme.palette[styleprops.color].contrastText;
 
   return {
     alignItems: 'center',
@@ -36,7 +36,7 @@ const Label = (props) => {
 
   return (
     <LabelRoot
-      styleProps={styleProps}
+      styleprops={styleProps}
       {...other}
     >
       {children}

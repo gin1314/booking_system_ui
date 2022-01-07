@@ -1,6 +1,11 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
+import 'nprogress/nprogress.css';
+import 'src/assets/nprogress.css';
+import  NProgress from 'nprogress';
+import router from 'next/router';
+
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -22,6 +27,26 @@ export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   const { settings } = useSettings();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const start = () => {
+      setLoading(true);
+      NProgress.start();
+    };
+    const end = () => {
+      setLoading(false);
+      NProgress.done();
+    };
+    router.events.on('routeChangeStart', start);
+    router.events.on('routeChangeComplete', end);
+    router.events.on('routeChangeError', end);
+    return () => {
+      router.events.off('routeChangeStart', start);
+      router.events.off('routeChangeComplete', end);
+      router.events.off('routeChangeError', end);
+    };
+  }, []);
 
   const theme = createTheme({
     direction: settings.direction,
@@ -31,6 +56,7 @@ export default function MyApp(props) {
   });
 
   const Layout = Component.Layout || EmptyLayout;
+
 
   return (
     <CacheProvider value={emotionCache}>

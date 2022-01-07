@@ -30,6 +30,7 @@
     "moment-timezone": "^0.5.34",
     "next": "latest",
     "notistack": "^2.0.2",
+    "nprogress": "^0.2.0",
     "numeral": "^2.0.6",
     "prop-types": "latest",
     "react": "latest",

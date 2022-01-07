@@ -21,7 +21,6 @@ const AccountPopover = () => {
   const anchorRef = useRef(null);
   // const { user, logout } = useAuth();
   const { user, logout } = useAuth();
-  console.log(user, 'user');
   // const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
@@ -75,7 +74,7 @@ const AccountPopover = () => {
           horizontal: 'center',
           vertical: 'bottom'
         }}
-        getContentAnchorEl={null}
+        // getContentAnchorEl={null}
         keepMounted
         onClose={handleClose}
         open={open}

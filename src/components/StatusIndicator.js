@@ -14,9 +14,9 @@ const colors = {
   online: '#43a047'
 };
 
-const StatusIndicatorRoot = styled('span')((({ styleProps }) => {
-  const size = sizes[styleProps.size];
-  const color = colors[styleProps.status];
+const StatusIndicatorRoot = styled('span')((({ styleprops }) => {
+  const size = sizes[styleprops.size];
+  const color = colors[styleprops.status];
 
   return {
     backgroundColor: color,
@@ -36,7 +36,7 @@ const StatusIndicator = (props) => {
 
   return (
     <StatusIndicatorRoot
-      styleProps={styleProps}
+      styleprops={styleProps}
       {...other}
     />
   );

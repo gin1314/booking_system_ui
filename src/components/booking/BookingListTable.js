@@ -5,18 +5,24 @@ import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
+  Autocomplete,
   Box,
   Card,
   CardHeader,
   Checkbox,
   Divider,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
+  TextField,
   Typography
 } from '@mui/material';
 import ArrowRightIcon from '../../icons/ArrowRight';
@@ -26,6 +32,7 @@ import MoreMenu from '../MoreMenu';
 import Scrollbar from '../Scrollbar';
 import OrderListBulkActions from './OrderListBulkActions';
 import Label from '../Label';
+import nProgress from 'nprogress';
 
 const getStatusLabel = (paymentStatus) => {
   const map = {
@@ -62,6 +69,7 @@ const BookingListTable = (props) => {
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
+  // nProgress.start();
 
   const handleSelectAllOrders = (event) => {
     setSelectedOrders(
@@ -118,7 +126,8 @@ const BookingListTable = (props) => {
                 {/* <TableCell>
                     Total
                   </TableCell> */}
-                <TableCell>Status</TableCell>
+                {/* <TableCell>Status</TableCell> */}
+                <TableCell>Set Status</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -167,7 +176,26 @@ const BookingListTable = (props) => {
                         order.land_postal_code
                       ])}
                     </TableCell>
-                    <TableCell>{getStatusLabel(order.status)}</TableCell>
+                    {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
+                    <TableCell>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Age
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={'pending'}
+                          label="Age"
+                          onChange={() => {}}
+                          size='small'
+                        >
+                          <MenuItem value={'pending'}>Pending</MenuItem>
+                          <MenuItem value={'completed'}>Completed</MenuItem>
+                          <MenuItem value={'cancelled'}>Candelled</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </TableCell>
                     <TableCell align="right">
                       <IconButton>
                         <PencilAltIcon fontSize="small" />
