@@ -1,6 +1,8 @@
 import { useState } from 'react';
 // import { Link as RouterLink } from 'react-router-dom';
-import NextLink from 'src/components/NextLink';
+// import NextLink from 'src/components/NextLink';
+import NextLink from 'next/link';
+import router from 'next/router';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -23,41 +25,23 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography
+  Typography,
+  Button,
+  Link
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import ArrowRightIcon from '../../icons/ArrowRight';
 import PencilAltIcon from '../../icons/PencilAlt';
 // Label
 import MoreMenu from '../MoreMenu';
 import Scrollbar from '../Scrollbar';
 import OrderListBulkActions from './OrderListBulkActions';
+import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
+import { useDispatch, useSelector } from 'src/store';
+import { postAssignBooking } from 'src/api';
+import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
-
-const getStatusLabel = (paymentStatus) => {
-  const map = {
-    canceled: {
-      color: 'error',
-      text: 'Canceled'
-    },
-    completed: {
-      color: 'success',
-      text: 'Completed'
-    },
-    pending: {
-      color: 'warning',
-      text: 'Pending'
-    },
-    rejected: {
-      color: 'error',
-      text: 'Rejected'
-    }
-  };
-
-  const { text, color } = map[paymentStatus];
-
-  return <Label color={color}>{text}</Label>;
-};
 
 const applyPagination = (orders, page, limit) =>
   orders.slice(page * limit, page * limit + limit);
@@ -68,7 +52,7 @@ const SetStatusSelect = ({ bookingId, status }) => {
   const [selected, setSelected] = useState(status);
   const handleChange = (event) => {
     setSelected(event.target.value);
-  }
+  };
 
   return (
     <FormControl fullWidth>
@@ -94,8 +78,11 @@ const SetStatusSelect = ({ bookingId, status }) => {
  * @returns null
  */
 const BookingListTable = (props) => {
-  const { orders, bookings, ...other } = props;
+  const { orders, bookings, user, ...other } = props;
   const [bookingsState, setBookingsState] = useState(bookings);
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const { booking, forType } = useSelector((state) => state.booking);
 
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
@@ -124,6 +111,35 @@ const BookingListTable = (props) => {
 
   const handleLimitChange = (event) => {
     setLimit(parseInt(event.target.value, 10));
+  };
+
+  const initiaizelAssignDialog = async (booking) => {
+    dispatch(openModal({ booking, forType: 'assign' }));
+    dispatch(
+      setModalLabels({
+        title: 'Assign Confirmation',
+        closeLabel: 'Close',
+        agreeLabel: 'Assign',
+        body: 'Are you sure you want to assign this booking to your account?'
+      })
+    );
+  };
+
+  const handleAssignAction = async () => {
+    try {
+      await postAssignBooking(booking.id);
+      enqueueSnackbar('Booking successfully assigned to you!', {
+        variant: 'success'
+      });
+      dispatch(closeModal());
+      router.push('/booking-list?my-bookings=true');
+
+    } catch (error) {
+      enqueueSnackbar('Something went wrong', {
+        variant: 'error'
+      });
+      dispatch(closeModal());
+    }
   };
 
   const paginatedOrders = applyPagination(orders, page, limit);
@@ -209,16 +225,36 @@ const BookingListTable = (props) => {
                     </TableCell>
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
-                      <SetStatusSelect bookingId={booking.id} status={booking.status}/>
+                      {/* <SetStatusSelect
+                        bookingId={booking.id}
+                        status={booking.status}
+                      /> */}
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton>
+                      {booking.user_id === user.user.id ? (
+                        <Button variant="text" size="small">
+                          Assigned to you
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => initiaizelAssignDialog(booking)}
+                        >
+                          Assign
+                        </Button>
+                      )}
+                      {/* <NextLink href="/" passHref>
+                        <Button variant="outlined">Assign</Button>
+                      </NextLink> */}
+
+                      {/* <IconButton>
                         <PencilAltIcon fontSize="small" />
-                      </IconButton>
+                      </IconButton> */}
                       {/* <NextLink href="order/dasd"> */}
-                      <IconButton>
+                      {/* <IconButton>
                         <ArrowRightIcon fontSize="small" />
-                      </IconButton>
+                      </IconButton> */}
                       {/* </NextLink> */}
                     </TableCell>
                   </TableRow>
@@ -242,13 +278,15 @@ const BookingListTable = (props) => {
         open={enableBulkActions}
         selected={selectedOrders}
       />
+      <BookingConfirmationModal handleAction={handleAssignAction} />
     </>
   );
 };
 
 BookingListTable.propTypes = {
   orders: PropTypes.array.isRequired,
-  bookings: PropTypes.object.isRequired
+  bookings: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 export default BookingListTable;

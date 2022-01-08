@@ -65,7 +65,12 @@ const engrSections = [
         title: 'Bookings / Transactions',
         path: '/booking-list',
         icon: <ReceiptIcon fontSize="small" />
-      }
+      },
+      {
+        title: 'Assigned Bookings',
+        path: '/booking-list?my-bookings=true',
+        icon: <ReceiptIcon fontSize="small" />
+      },
     ]
   }
 ];

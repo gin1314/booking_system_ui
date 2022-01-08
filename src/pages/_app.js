@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import 'nprogress/nprogress.css';
 import 'src/assets/nprogress.css';
-import  NProgress from 'nprogress';
+import NProgress from 'nprogress';
 import router from 'next/router';
 
+import { Provider as ReduxProvider } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -17,6 +18,7 @@ import { createTheme } from 'src/theme';
 import createEmotionCache from 'src/createEmotionCache';
 import GlobalStyles from 'src/components/GlobalStyles';
 import { AuthProvider } from 'src/contexts/JWTContext';
+import store from 'src/store';
 import 'src/__mocks__';
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -57,23 +59,24 @@ export default function MyApp(props) {
 
   const Layout = Component.Layout || EmptyLayout;
 
-
   return (
     <CacheProvider value={emotionCache}>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <SnackbarProvider dense maxSnack={3}>
-            <AuthProvider>
-              <GlobalStyles />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </AuthProvider>
-          </SnackbarProvider>
-        </ThemeProvider>
-      </LocalizationProvider>
+      <ReduxProvider store={store}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <SnackbarProvider dense maxSnack={3}>
+              <AuthProvider>
+                <GlobalStyles />
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </AuthProvider>
+            </SnackbarProvider>
+          </ThemeProvider>
+        </LocalizationProvider>
+      </ReduxProvider>
     </CacheProvider>
   );
 }

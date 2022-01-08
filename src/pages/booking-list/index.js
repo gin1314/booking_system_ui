@@ -129,7 +129,7 @@ const BookingList = ({ bookings, user }) => {
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            <BookingListTable orders={orders} bookings={bookings} />
+            <BookingListTable orders={orders} bookings={bookings} user={user}/>
           </Box>
         </Container>
       </Box>
@@ -139,22 +139,19 @@ const BookingList = ({ bookings, user }) => {
 
 BookingList.Layout = DashboardLayout;
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps = async ({ req, query }) => {
   const {
     cookies: { token }
   } = req;
   let bookings;
   let user;
-  try {
-    const apiResp = await fetch(`${process.env.apiBaseURLLocal}/booking`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    });
 
+  // const params = new URLSearchParams(query);
+
+  let bookingQuery = {
+    // 'filter[user_id]': null
+  };
+  try {
     const apiRespMe = await fetch(`${process.env.apiBaseURLLocal}/auth/me`, {
       method: 'GET',
       mode: 'cors',
@@ -164,8 +161,25 @@ export const getServerSideProps = async ({ req }) => {
       }
     });
 
-    bookings = await apiResp.json();
     user = await apiRespMe.json();
+
+    if (_.get(query, 'my-bookings')) {
+      bookingQuery = {
+        'filter[user_id]': user.user.id
+      };
+    }
+    const allQuery = (new URLSearchParams(bookingQuery)).toString();
+
+    const apiResp = await fetch(`${process.env.apiBaseURLLocal}/booking?${allQuery}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    bookings = await apiResp.json();
     if (_.get(apiResp, 'status') >= 400) {
       return {
         redirect: {

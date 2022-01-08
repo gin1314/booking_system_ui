@@ -64,12 +64,17 @@ const postAddUserToDepartment = (userId, departmentId, params = {}) => {
 };
 
 const postConfirmBooking = (bookingId, params = {}) => {
-  return iAxios.post(`/booking/confirm-booking/${bookingId}`, params);
+  return iAxios.post(`/booking/confirm/${bookingId}`, params);
+};
+
+const postAssignBooking = (bookingId, params = {}) => {
+  return iAxios.post(`/booking/assign/${bookingId}`, params);
 };
 
 export {
   getAllBookings,
   postCreateBooking,
-  postConfirmBooking
+  postConfirmBooking,
+  postAssignBooking
 };
 export default iAxios;

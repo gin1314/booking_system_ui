@@ -1,5 +1,6 @@
 import { useState } from 'react';
 // import { NavLink as RouterLink } from 'react-router-dom';
+import NextLink from  'next/link';
 import PropTypes from 'prop-types';
 import { Box, Button, Collapse, ListItem } from '@mui/material';
 import ChevronDownIcon from '../icons/ChevronDown';
@@ -69,6 +70,7 @@ const NavItem = (props) => {
         py: 0
       }}
     >
+      <NextLink href={path} passHref>
       <Button
         // component={path && RouterLink}
         startIcon={icon}
@@ -98,6 +100,7 @@ const NavItem = (props) => {
         </Box>
         {info}
       </Button>
+      </NextLink>
     </ListItem>
   );
 };
