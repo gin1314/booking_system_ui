@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import DatePicker from '@mui/lab/DatePicker';
 import MomentAdapter from '@date-io/moment';
 import { useSnackbar } from 'notistack';
@@ -28,7 +29,9 @@ import {
   Switch,
   Divider,
   CardActions,
-  FormControlLabel
+  FormControlLabel,
+  Popover,
+  Card
 } from '@mui/material';
 import { postCreateBooking } from 'src/api';
 
@@ -96,11 +99,10 @@ function AlertDialog() {
   );
 }
 
-const Booking = (props) => {
-  const { timeslot } = props;
-
+const Booking = ({ timeslot, surveyTypeHints }) => {
   const { enqueueSnackbar } = useSnackbar();
   const today = new Date();
+
   return (
     <Box
       sx={{
@@ -184,7 +186,7 @@ const Booking = (props) => {
             touched,
             values
           }) => (
-            <form onSubmit={handleSubmit} {...props}>
+            <form onSubmit={handleSubmit}>
               <Box sx={{ p: 2 }}>
                 <Typography color="textPrimary" variant="h5">
                   Fill-up the form to book an appointment
@@ -288,7 +290,9 @@ const Booking = (props) => {
                             value={values.survey_type}
                             label="Survey type"
                             name="survey_type"
-                            onChange={handleChange}
+                            onChange={(event) => {
+                              handleChange(event);
+                            }}
                           >
                             {survey_type.map((data) => (
                               <MenuItem key={data.value} value={data.value}>
@@ -302,6 +306,28 @@ const Booking = (props) => {
                             </FormHelperText>
                           ) : null}
                         </FormControl>
+                      </Box>
+
+                      <Box
+                        sx={{
+                          mt: 3,
+                          display: values.survey_type ? 'block' : 'none'
+                        }}
+                      >
+                        <Card sx={{ minWidth: 275 }}>
+                          <CardContent>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              color="text.secondary"
+                              gutterBottom
+                            >
+                              Survey type description
+                            </Typography>
+                            <Typography variant="body2">
+                              {surveyTypeHints[values.survey_type] || 'N/A'}
+                            </Typography>
+                          </CardContent>
+                        </Card>
                       </Box>
                     </Grid>
 
@@ -772,6 +798,20 @@ const Booking = (props) => {
 
 export const getServerSideProps = async ({ req, res, query, params }) => {
   let timeSlot;
+  const surveyTypeHints = {
+    boundary:
+      'A boundary survey is a means of defining the limits of a property formally. It mainly focuses on the definition of the corners of a plot. People usually perform boundary surveys before they buy, split, improve or build on the land.',
+    construction:
+      'A construction survey is used to establish or mark the desired position of building corners, roads, sidewalks, or utilities that the engineer has designed. Particular attention is made to ensure the building does not encroach or overlap into or over the designated setbacks, easements, or property line.',
+    location:
+      'A location survey is an establishment on the ground of points and lines in positions that have been determined previously by computation or by graphical methods, or by a description obtained from data supplied by documents of record, such as deeds, maps, or other sources.',
+    site_planning:
+      'A site plan survey is a combination of a Boundary Survey and Topographic Survey. Site plans are used when making improvements to properties or during new construction.',
+    subdivision:
+      'Subdivision Survey (commonly referred to as subdivision platting) is the process of splitting a tract of land into smaller parcels. This shows monumentation and survey data on a map in conformance with local subdivision ordinance.',
+    topographic:
+      'A topographic survey locates all surface features of a property and depicts all-natural features and elevations. In essence, it is a 3-dimensional map of a 3-dimensional property showing all-natural and man-made features and improvements.'
+  };
   try {
     const apiResp = await fetch(`${process.env.apiBaseURLLocal}/timeslot`, {
       method: 'GET',
@@ -792,12 +832,14 @@ export const getServerSideProps = async ({ req, res, query, params }) => {
       };
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 
   return {
     props: {
-      timeslot: timeSlot.data
+      timeslot: timeSlot.data,
+      surveyTypeHints
     }
   };
 };

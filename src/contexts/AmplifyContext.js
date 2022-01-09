@@ -103,6 +103,7 @@ export const AuthProvider = (props) => {
     const user = await Auth.signIn(email, password);
 
     if (user.challengeName) {
+      // eslint-disable-next-line no-console
       console.error(`Unable to login, because challenge "${user.challengeName}" is mandated and we did not handle this case.`);
       return;
     }
