@@ -34,6 +34,7 @@
     "nprogress": "^0.2.0",
     "numeral": "^2.0.6",
     "prop-types": "latest",
+    "query-string": "^7.1.0",
     "react": "latest",
     "react-dom": "latest",
     "react-helmet": "^6.1.0",
