@@ -13,6 +13,8 @@ import {
   Popover,
   Typography
 } from '@mui/material';
+import Cookies from 'js-cookie';
+
 import useAuth from '../../hooks/useAuth';
 import CogIcon from '../../icons/Cog';
 import UserIcon from '../../icons/User';
@@ -37,7 +39,7 @@ const AccountPopover = () => {
     try {
       handleClose();
       await logout();
-      // navigate('/');
+      Cookies.remove('token');
     } catch (err) {
       enqueueSnackbar('Unable to logout', {
         anchorOrigin: {

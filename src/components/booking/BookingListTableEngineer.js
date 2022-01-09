@@ -43,6 +43,14 @@ import { postConfirmBooking, postCompleteBooking } from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
+import { SeverityPill } from '../SeverityPill';
+
+const severityMap = {
+  completed: 'success',
+  pending: 'info',
+  cancelled: 'warning',
+  confirmed: 'primary'
+};
 
 const applyPagination = (orders, page, limit) =>
   orders.slice(page * limit, page * limit + limit);
@@ -263,9 +271,11 @@ const BookingListTableEngineer = (props) => {
                     </TableCell>
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
-                      <Button variant="text" size="small">
+                      <SeverityPill
+                        color={severityMap[booking.status] || 'warning'}
+                      >
                         {booking.status}
-                      </Button>
+                      </SeverityPill>
                     </TableCell>
                     <TableCell align="right">
                       {booking.status === 'pending' && (

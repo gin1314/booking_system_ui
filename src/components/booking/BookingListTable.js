@@ -42,6 +42,14 @@ import { postAssignBooking } from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
+import { SeverityPill } from '../SeverityPill';
+
+const severityMap = {
+  completed: 'success',
+  pending: 'info',
+  cancelled: 'warning',
+  confirmed: 'primary'
+};
 
 const applyPagination = (orders, page, limit) =>
   orders.slice(page * limit, page * limit + limit);
@@ -87,23 +95,7 @@ const BookingListTable = (props) => {
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
-  // nProgress.start();
 
-  const handleSelectAllOrders = (event) => {
-    setSelectedOrders(
-      event.target.checked ? orders.map((order) => order.id) : []
-    );
-  };
-
-  const handleSelectOneOrder = (event, orderId) => {
-    if (!selectedOrders.includes(orderId)) {
-      setSelectedOrders((prevSelected) => [...prevSelected, orderId]);
-    } else {
-      setSelectedOrders((prevSelected) =>
-        prevSelected.filter((id) => id !== orderId)
-      );
-    }
-  };
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -173,7 +165,7 @@ const BookingListTable = (props) => {
                     Total
                   </TableCell> */}
                 {/* <TableCell>Status</TableCell> */}
-                <TableCell>Set Status</TableCell>
+                <TableCell>Booking Status</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -224,10 +216,11 @@ const BookingListTable = (props) => {
                     </TableCell>
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
-                      {/* <SetStatusSelect
-                        bookingId={booking.id}
-                        status={booking.status}
-                      /> */}
+                      <SeverityPill
+                        color={severityMap[booking.status] || 'warning'}
+                      >
+                        {booking.status}
+                      </SeverityPill>
                     </TableCell>
                     <TableCell align="right">
                       {booking.user_id && booking.user_id !== user.user.id ? (

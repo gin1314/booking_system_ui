@@ -170,7 +170,7 @@ export const getServerSideProps = async ({ req, query }) => {
   // const params = new URLSearchParams(query);
 
   let bookingQuery = {
-    // 'filter[user_id]': null
+    sort: '-schedule_date'
   };
   let isOnMyBooking = false;
   try {
@@ -186,9 +186,7 @@ export const getServerSideProps = async ({ req, query }) => {
     user = await apiRespMe.json();
 
     if (_.get(query, 'my-bookings')) {
-      bookingQuery = {
-        'filter[user_id]': user.user.id
-      };
+      bookingQuery['filter[user_id]'] = user.user.id;
       isOnMyBooking = true;
     }
     const allQuery = new URLSearchParams(bookingQuery).toString();
