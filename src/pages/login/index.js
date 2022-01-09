@@ -98,7 +98,7 @@ const Login = () => {
               >
                 <div>
                   <Typography color="textPrimary" gutterBottom variant="h5">
-                    Log in on the internal platform
+                    Log in
                   </Typography>
                   {/* <Typography color="textSecondary" variant="body2">
                     Log in on the internal platform

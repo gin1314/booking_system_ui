@@ -93,7 +93,7 @@ const AccountPopover = () => {
             color="textSecondary"
             variant="subtitle2"
           >
-            JBL Survey
+            JBS Land Surveying
           </Typography>
         </Box>
         <Divider />

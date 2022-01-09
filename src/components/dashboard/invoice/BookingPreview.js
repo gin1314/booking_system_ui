@@ -35,7 +35,7 @@ const BookingPreview = (props) => {
             <Grid item>
               {/* <Logo /> */}
               <Typography color="textPrimary" variant="h6">
-                www.jbl-survey.com
+                www.jbs-land-surveying.com
               </Typography>
             </Grid>
             <Grid item>
