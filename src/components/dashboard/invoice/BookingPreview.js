@@ -43,7 +43,7 @@ const BookingPreview = (props) => {
                 {''}
               </Typography>
               <Typography color="textPrimary" variant="subtitle2">
-                Invoice # {booking.data.id}
+                Booking Ref No. # {booking.data.id}
               </Typography>
             </Grid>
           </Grid>
