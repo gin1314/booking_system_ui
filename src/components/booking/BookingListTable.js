@@ -96,7 +96,6 @@ const BookingListTable = (props) => {
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
 
-
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -131,6 +130,38 @@ const BookingListTable = (props) => {
       });
       dispatch(closeModal());
     }
+  };
+
+  const ActionButtons = ({ booking }) => {
+    if (!booking.user_id) {
+      return (
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => initiaizelAssignDialog(booking)}
+        >
+          Assign
+        </Button>
+      );
+    }
+
+    if (booking.user_id && booking.user_id !== user.user.id) {
+      return (
+        <Button variant="text" size="small">
+          Assigned
+        </Button>
+      );
+    }
+
+    if (booking.user_id === user.user.id) {
+      return (
+        <Button variant="text" size="small">
+          Assigned to you
+        </Button>
+      );
+    }
+
+    return null;
   };
 
   const paginatedOrders = applyPagination(orders, page, limit);
@@ -223,7 +254,7 @@ const BookingListTable = (props) => {
                       </SeverityPill>
                     </TableCell>
                     <TableCell align="right">
-                      {booking.user_id && booking.user_id !== user.user.id ? (
+                      {/* {booking.user_id && booking.user_id !== user.user.id ? (
                         <Button variant="text" size="small">
                           Assigned
                         </Button>
@@ -235,7 +266,8 @@ const BookingListTable = (props) => {
                         >
                           Assign
                         </Button>
-                      )}
+                      )} */}
+                      <ActionButtons booking={booking} />
                       {/* <NextLink href="/" passHref>
                         <Button variant="outlined">Assign</Button>
                       </NextLink> */}
