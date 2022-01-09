@@ -71,10 +71,15 @@ const postAssignBooking = (bookingId, params = {}) => {
   return iAxios.post(`/booking/assign/${bookingId}`, params);
 };
 
+const postCompleteBooking = (bookingId, params = {}) => {
+  return iAxios.post(`/booking/complete/${bookingId}`, params);
+};
+
 export {
   getAllBookings,
   postCreateBooking,
   postConfirmBooking,
-  postAssignBooking
+  postAssignBooking,
+  postCompleteBooking
 };
 export default iAxios;

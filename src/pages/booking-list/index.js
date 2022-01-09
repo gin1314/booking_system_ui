@@ -10,7 +10,10 @@ import {
   Link,
   Typography
 } from '@mui/material';
-import { BookingListTable } from 'src/components/booking';
+import {
+  BookingListTable,
+  BookingListTableEngineer
+} from 'src/components/booking';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 import useSettings from 'src/hooks/useSettings';
 import ChevronRightIcon from 'src/icons/ChevronRight';
@@ -22,7 +25,16 @@ import axios from 'src/lib/axios';
 import DashboardLayout from 'src/components/dashboard/DashboardLayout';
 import _ from 'lodash';
 
-const BookingList = ({ bookings, user }) => {
+const BookingTable = ({ role, isOnMyBooking = false, ...others }) => {
+  if (role === 'engineer' && isOnMyBooking) {
+    return <BookingListTableEngineer {...others} />;
+  }
+  if (!isOnMyBooking) {
+    return <BookingListTable {...others} />;
+  }
+};
+
+const BookingList = ({ bookings, user, isOnMyBooking }) => {
   const isMountedRef = useIsMountedRef();
   const { settings } = useSettings();
   const [orders, setOrders] = useState([]);
@@ -47,7 +59,9 @@ const BookingList = ({ bookings, user }) => {
   return (
     <>
       <Helmet>
-        <title>Dashboard: Booking List (Admin)</title>
+        <title>{`Dashboard: Booking List ${String(
+          user.user.role
+        ).toUpperCase()}`}</title>
       </Helmet>
       <Box
         sx={{
@@ -60,7 +74,8 @@ const BookingList = ({ bookings, user }) => {
           <Grid container justifyContent="space-between" spacing={3}>
             <Grid item>
               <Typography color="textPrimary" variant="h5">
-                Booking List
+                {isOnMyBooking && 'My Booking List'}
+                {!isOnMyBooking && 'Booking List'}
               </Typography>
               {/* <Breadcrumbs
                 aria-label="breadcrumb"
@@ -129,7 +144,13 @@ const BookingList = ({ bookings, user }) => {
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            <BookingListTable orders={orders} bookings={bookings} user={user}/>
+            <BookingTable
+              role={user.user.role}
+              isOnMyBooking={isOnMyBooking}
+              orders={orders}
+              bookings={bookings}
+              user={user}
+            />
           </Box>
         </Container>
       </Box>
@@ -151,6 +172,7 @@ export const getServerSideProps = async ({ req, query }) => {
   let bookingQuery = {
     // 'filter[user_id]': null
   };
+  let isOnMyBooking = false;
   try {
     const apiRespMe = await fetch(`${process.env.apiBaseURLLocal}/auth/me`, {
       method: 'GET',
@@ -167,17 +189,21 @@ export const getServerSideProps = async ({ req, query }) => {
       bookingQuery = {
         'filter[user_id]': user.user.id
       };
+      isOnMyBooking = true;
     }
-    const allQuery = (new URLSearchParams(bookingQuery)).toString();
+    const allQuery = new URLSearchParams(bookingQuery).toString();
 
-    const apiResp = await fetch(`${process.env.apiBaseURLLocal}/booking?${allQuery}`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`
+    const apiResp = await fetch(
+      `${process.env.apiBaseURLLocal}/booking?${allQuery}`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`
+        }
       }
-    });
+    );
 
     bookings = await apiResp.json();
     if (_.get(apiResp, 'status') >= 400) {
@@ -196,7 +222,8 @@ export const getServerSideProps = async ({ req, query }) => {
   return {
     props: {
       bookings,
-      user
+      user,
+      isOnMyBooking
     }
   };
 };

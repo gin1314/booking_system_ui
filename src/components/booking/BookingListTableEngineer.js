@@ -27,7 +27,8 @@ import {
   TextField,
   Typography,
   Button,
-  Link
+  Link,
+  Tooltip
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import ArrowRightIcon from '../../icons/ArrowRight';
@@ -38,7 +39,7 @@ import Scrollbar from '../Scrollbar';
 import OrderListBulkActions from './OrderListBulkActions';
 import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
-import { postAssignBooking } from 'src/api';
+import { postConfirmBooking, postCompleteBooking } from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
@@ -77,7 +78,7 @@ const SetStatusSelect = ({ bookingId, status }) => {
  * @param {*} props
  * @returns null
  */
-const BookingListTable = (props) => {
+const BookingListTableEngineer = (props) => {
   const { orders, bookings, user, ...other } = props;
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
@@ -113,26 +114,55 @@ const BookingListTable = (props) => {
     setLimit(parseInt(event.target.value, 10));
   };
 
-  const initiaizelAssignDialog = async (booking) => {
-    dispatch(openModal({ booking, forType: 'assign' }));
+  const initiaizelConfirmnDialog = async (booking) => {
+    dispatch(openModal({ booking, forType: 'confirm' }));
     dispatch(
       setModalLabels({
-        title: 'Assign Confirmation',
+        title: 'Booking Confirmation',
         closeLabel: 'Close',
-        agreeLabel: 'Assign',
-        body: 'Are you sure you want to assign this booking to your account?'
+        agreeLabel: 'Confirm',
+        body: 'Are you sure you want to confirm this booking?'
+      })
+    );
+  };
+
+  const initiaizelCompletedDialog = async (booking) => {
+    dispatch(openModal({ booking, forType: 'completed' }));
+    dispatch(
+      setModalLabels({
+        title: 'Complete Booking Confirmation',
+        closeLabel: 'Close',
+        agreeLabel: 'Complete',
+        body: 'Are you sure you want to complete this booking?'
       })
     );
   };
 
   const handleAssignAction = async () => {
     try {
-      await postAssignBooking(booking.id);
-      enqueueSnackbar('Booking successfully assigned to you!', {
-        variant: 'success'
-      });
-      dispatch(closeModal());
-      router.push('/booking-list?my-bookings=true');
+      switch (forType) {
+        case 'confirm':
+          await postConfirmBooking(booking.id);
+          enqueueSnackbar(
+            'Booking successfully confirmed, an email will be sent to the client!',
+            {
+              variant: 'success'
+            }
+          );
+          dispatch(closeModal());
+          router.push('/booking-list?my-bookings=true');
+          break;
+        case 'completed':
+          await postCompleteBooking(booking.id);
+          enqueueSnackbar('Booking successfully completed', {
+            variant: 'success'
+          });
+          dispatch(closeModal());
+          router.push('/booking-list?my-bookings=true');
+          break;
+        default:
+          break;
+      }
     } catch (error) {
       enqueueSnackbar('Something went wrong', {
         variant: 'error'
@@ -150,7 +180,7 @@ const BookingListTable = (props) => {
   return (
     <>
       <Card {...other}>
-        <CardHeader action={<div />} title="Bookings" />
+        <CardHeader action={<div />} title="My Bookings" />
         <Divider />
         {/* <Scrollbar> */}
         <Box sx={{ minWidth: 1150 }}>
@@ -173,11 +203,20 @@ const BookingListTable = (props) => {
                     Total
                   </TableCell> */}
                 {/* <TableCell>Status</TableCell> */}
-                <TableCell>Set Status</TableCell>
+                <TableCell>Booking Status</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
+              {bookings.data.length <= 0 && (
+                <TableRow>
+                  <TableCell colSpan={6}>
+                    <Typography variant="subtitle2">
+                      You have no assigned bookings yet 😢
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
               {bookings.data.map((booking) => {
                 const isBookingSelected = selectedOrders.includes(booking.id);
 
@@ -224,24 +263,32 @@ const BookingListTable = (props) => {
                     </TableCell>
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
-                      {/* <SetStatusSelect
-                        bookingId={booking.id}
-                        status={booking.status}
-                      /> */}
+                      <Button variant="text" size="small">
+                        {booking.status}
+                      </Button>
                     </TableCell>
                     <TableCell align="right">
-                      {booking.user_id && booking.user_id !== user.user.id ? (
-                        <Button variant="text" size="small">
-                          Assigned
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => initiaizelAssignDialog(booking)}
-                        >
-                          Assign
-                        </Button>
+                      {booking.status === 'pending' && (
+                        <Tooltip title="Click this to confirm booking">
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => initiaizelConfirmnDialog(booking)}
+                          >
+                            Confirm Booking
+                          </Button>
+                        </Tooltip>
+                      )}
+                      {booking.status === 'confirmed' && (
+                        <Tooltip title="Click this if you have completed the survey">
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => initiaizelCompletedDialog(booking)}
+                          >
+                            Complete Booking
+                          </Button>
+                        </Tooltip>
                       )}
                       {/* <NextLink href="/" passHref>
                         <Button variant="outlined">Assign</Button>
@@ -282,10 +329,10 @@ const BookingListTable = (props) => {
   );
 };
 
-BookingListTable.propTypes = {
+BookingListTableEngineer.propTypes = {
   orders: PropTypes.array.isRequired,
   bookings: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 
-export default BookingListTable;
+export default BookingListTableEngineer;

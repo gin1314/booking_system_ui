@@ -384,6 +384,7 @@ const Booking = (props) => {
                         error={Boolean(touched.email && errors.email)}
                         helperText={touched.email && errors.email}
                         fullWidth
+                        required
                         label="Email"
                         name="email"
                         variant="outlined"
@@ -471,6 +472,7 @@ const Booking = (props) => {
                           errors.client_postal_code
                         }
                         fullWidth
+                        required
                         label="Postal code / Zip code"
                         name="client_postal_code"
                         variant="outlined"
@@ -548,6 +550,7 @@ const Booking = (props) => {
                           touched.land_postal_code && errors.land_postal_code
                         }
                         fullWidth
+                        required
                         label="Postal code / Zip code"
                         name="land_postal_code"
                         variant="outlined"
