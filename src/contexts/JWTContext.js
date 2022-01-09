@@ -2,6 +2,9 @@ import { createContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'src/api';
 import jwtDecode from 'jwt-decode';
+import router from 'next/router';
+import Cookie from 'js-cookie';
+
 
 const initialState = {
   isAuthenticated: false,
@@ -26,6 +29,7 @@ const setSession = (accessToken) => {
     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
     localStorage.removeItem('accessToken');
+    Cookie.remove('token');
     delete axios.defaults.headers.common.Authorization;
   }
 };
@@ -53,7 +57,7 @@ const handlers = {
   LOGOUT: (state) => ({
     ...state,
     isAuthenticated: false,
-    user: null
+    user: {}
   }),
   REGISTER: (state, action) => {
     const { user } = action.payload;
@@ -103,17 +107,18 @@ export const AuthProvider = (props) => {
             type: 'INITIALIZE',
             payload: {
               isAuthenticated: false,
-              user: null
+              user: {}
             }
           });
         }
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
         dispatch({
           type: 'INITIALIZE',
           payload: {
             isAuthenticated: false,
-            user: null
+            user: {}
           }
         });
       }
@@ -142,6 +147,8 @@ export const AuthProvider = (props) => {
   const logout = async () => {
     setSession(null);
     dispatch({ type: 'LOGOUT' });
+    router.push('/login');
+
   };
 
   const register = async (email, name, password) => {

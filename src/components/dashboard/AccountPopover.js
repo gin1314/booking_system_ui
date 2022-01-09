@@ -87,7 +87,7 @@ const AccountPopover = () => {
             color="textPrimary"
             variant="subtitle2"
           >
-            {'user.name'}
+            {user.name}
           </Typography>
           <Typography
             color="textSecondary"
@@ -98,7 +98,7 @@ const AccountPopover = () => {
         </Box>
         <Divider />
         <Box sx={{ mt: 2 }}>
-          <MenuItem
+          {/* <MenuItem
             // component={RouterLink}
             // to="/dashboard/social/profile"
           >
@@ -115,8 +115,8 @@ const AccountPopover = () => {
                 </Typography>
               )}
             />
-          </MenuItem>
-          <MenuItem
+          </MenuItem> */}
+          {/* <MenuItem
             // component={RouterLink}
             // to="/dashboard/account"
           >
@@ -133,7 +133,7 @@ const AccountPopover = () => {
                 </Typography>
               )}
             />
-          </MenuItem>
+          </MenuItem> */}
         </Box>
         <Box sx={{ p: 2 }}>
           <Button
