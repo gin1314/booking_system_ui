@@ -43,7 +43,7 @@ const BookingPreview = (props) => {
                 {''}
               </Typography>
               <Typography color="textPrimary" variant="subtitle2">
-                Booking Ref No. # {booking.data.id}
+                Booking Ref No. # {String(booking.data.id).padStart(12, '0')}
               </Typography>
             </Grid>
           </Grid>

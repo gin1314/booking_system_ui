@@ -117,7 +117,8 @@ export const getServerSideProps = async ({ req, res, query, params }) => {
         method: 'GET',
         mode: 'cors',
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`
         }
       }
     );
