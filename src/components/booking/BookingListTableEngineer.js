@@ -81,6 +81,60 @@ const SetStatusSelect = ({ bookingId, status }) => {
     </FormControl>
   );
 };
+
+const searchByOptions = [
+  {
+    value: 'filter[id]',
+    label: 'Reference no.'
+  },
+  {
+    value: 'filter[schdule_date]',
+    label: 'Schedule date'
+  },
+  {
+    value: 'filter[first_name]',
+    label: 'Client first name'
+  },
+  {
+    value: 'filter[last_name]',
+    label: 'client last name'
+  },
+  {
+    value: 'filter[phone_no]',
+    label: 'Client phone no.'
+  },
+  {
+    value: 'filter[email]',
+    label: 'Client email'
+  }
+];
+
+const sortOptions = [
+  {
+    value: 'id',
+    label: 'Reference No.'
+  },
+  {
+    value: 'schedule_date',
+    label: 'Schedule date'
+  },
+  {
+    value: 'created_at',
+    label: 'Date Created'
+  }
+];
+
+const sortDirectionOptions = [
+  {
+    value: '-',
+    label: 'Descending'
+  },
+  {
+    value: ' ',
+    label: 'Ascending'
+  }
+];
+
 /**
  * Booking label component
  * @param {*} props

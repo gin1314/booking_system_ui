@@ -74,7 +74,9 @@ const Login = () => {
                     variant="contained"
                     onClick={() => router.push('/booking')}
                   >
-                    Want to book? Click here
+                    <Typography variant='h6'>
+                      {'Book a land survey appointment with us NOW!'}
+                    </Typography>
                   </Button>
                 </Box>
               </CardContent>

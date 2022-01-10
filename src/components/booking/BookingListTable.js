@@ -27,21 +27,19 @@ import {
   TextField,
   Typography,
   Button,
-  Link
+  Link,
+  InputAdornment
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import ArrowRightIcon from '../../icons/ArrowRight';
-import PencilAltIcon from '../../icons/PencilAlt';
-// Label
-import MoreMenu from '../MoreMenu';
-import Scrollbar from '../Scrollbar';
+import _ from 'lodash';
+import SearchIcon from 'src/icons/Search';
 import OrderListBulkActions from './OrderListBulkActions';
 import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
-import { postAssignBooking } from 'src/api';
+import { postAssignBooking, getAllBookingsFiltered } from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
-import nProgress from 'nprogress';
+import NProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
 
 const severityMap = {
@@ -80,6 +78,60 @@ const SetStatusSelect = ({ bookingId, status }) => {
     </FormControl>
   );
 };
+
+const searchByOptions = [
+  {
+    value: 'filter[id]',
+    label: 'Reference no.'
+  },
+  {
+    value: 'filter[schdule_date]',
+    label: 'Schedule date'
+  },
+  {
+    value: 'filter[first_name]',
+    label: 'Client first name'
+  },
+  {
+    value: 'filter[last_name]',
+    label: 'client last name'
+  },
+  {
+    value: 'filter[phone_no]',
+    label: 'Client phone no.'
+  },
+  {
+    value: 'filter[email]',
+    label: 'Client email'
+  }
+];
+
+const sortOptions = [
+  {
+    value: 'id',
+    label: 'Reference No.'
+  },
+  {
+    value: 'schedule_date',
+    label: 'Schedule date'
+  },
+  {
+    value: 'created_at',
+    label: 'Date Created'
+  }
+];
+
+const sortDirectionOptions = [
+  {
+    value: '-',
+    label: 'Descending'
+  },
+  {
+    value: ' ',
+    label: 'Ascending'
+  }
+];
+
 /**
  * Booking label component
  * @param {*} props
@@ -90,18 +142,135 @@ const BookingListTable = (props) => {
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+  const [query, setQuery] = useState('-');
+  const [sort, setSort] = useState('id');
+  const [sortDir, setSortDir] = useState('');
   const { booking, forType } = useSelector((state) => state.booking);
+  const [searchByValue, setSearchByValue] = useState('filter[id]');
 
-  const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(15);
+
+  const handleQueryChange = (event) => {
+    event.persist();
+    setQuery(event.target.value);
+  };
+
+  const handleSearchByChange = (event) => {
+    setSearchByValue(event.target.value);
+  };
+
+  const handleSortChange = (event) => {
+    setSort(event.target.value);
+  };
+
+  const handleSortDirChange = (event) => {
+    setSortDir(event.target.value);
+  };
 
   const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+    (async () => {
+      let response;
+      NProgress.start();
+      const sorting = { sort: `${sortDir}${sort}` };
+      try {
+        response = await getAllBookingsFiltered(newPage + 1, limit, {
+          include: 'user',
+          [searchByValue]: query,
+          ...sorting
+          // ...defaultFilter
+        });
+        setBookingsState(response.data);
+        setPage(newPage);
+        NProgress.done();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+        NProgress.done();
+      }
+      return response;
+    })().then((data) => {});
   };
 
   const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value, 10));
+    (async () => {
+      let response;
+      NProgress.start();
+      const sorting = { sort: `${sortDir}${sort}` };
+
+      try {
+        response = await getAllBookingsFiltered(page + 1, event.target.value, {
+          include: 'user',
+          [searchByValue]: query,
+          // ...defaultFilter
+          ...sorting
+        });
+        setBookingsState(response.data);
+        setLimit(parseInt(event.target.value));
+        NProgress.done();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+        NProgress.done();
+      }
+      return response;
+    })().then((data) => {});
+    // setLimit(parseInt(event.target.value));
+  };
+
+  const handleOnPressEnterQuery = (e) => {
+    if (query === '') {
+      setPage(0);
+    }
+    const sorting = { sort: `${sortDir}${sort}` };
+    if (e.key === 'Enter') {
+      (async () => {
+        let response;
+        NProgress.start();
+        try {
+          response = await getAllBookingsFiltered(page + 1, limit, {
+            include: 'user',
+            [searchByValue]: query,
+            // ...defaultFilter
+            ...sorting
+          });
+          setBookingsState(response.data);
+          setPage(page);
+          NProgress.done();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error(err);
+          NProgress.done();
+        }
+        return response;
+      })();
+    }
+  };
+
+  const handleSortQuery = (e) => {
+    const sorting = { sort: `${sortDir}${sort}` };
+    // if (e.key === 'Enter') {
+    (async () => {
+      let response;
+      NProgress.start();
+      try {
+        response = await getAllBookingsFiltered(page + 1, limit, {
+          include: 'user',
+          [searchByValue]: query,
+          // ...defaultFilter
+          ...sorting
+        });
+        setBookingsState(response.data);
+        setPage(page);
+        NProgress.done();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+        NProgress.done();
+      }
+      return response;
+    })();
+    // }
   };
 
   const initiaizelAssignDialog = async (booking) => {
@@ -164,20 +333,96 @@ const BookingListTable = (props) => {
     return null;
   };
 
-  const paginatedOrders = applyPagination(orders, page, limit);
-  const enableBulkActions = selectedOrders.length > 0;
-  const selectedSomeOrders =
-    selectedOrders.length > 0 && selectedOrders.length < orders.length;
-  const selectedAllOrders = selectedOrders.length === orders.length;
-
   return (
     <>
       <Card {...other}>
+        <Box p={2} minHeight={56} display="flex" alignItems="center">
+          <Box>
+            <TextField
+              // className={classes.queryField}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                )
+              }}
+              label="Search"
+              onChange={handleQueryChange}
+              onKeyPress={handleOnPressEnterQuery}
+              placeholder="Search"
+              value={query}
+              variant="outlined"
+              size="small"
+            />
+          </Box>
+          <Box ml={2}>
+            <TextField
+              label="Search By"
+              name="sort"
+              onChange={handleSearchByChange}
+              select
+              size="small"
+              SelectProps={{ native: true }}
+              value={searchByValue}
+              variant="outlined"
+            >
+              {searchByOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </TextField>
+          </Box>
+          <Box ml={6}>
+            <TextField
+              label="Sort By"
+              name="sort"
+              onChange={handleSortChange}
+              select
+              size="small"
+              SelectProps={{ native: true }}
+              value={sort}
+              variant="outlined"
+            >
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </TextField>
+          </Box>
+          <Box ml={2}>
+            <TextField
+              label="Direction"
+              name="sort"
+              onChange={handleSortDirChange}
+              select
+              size="small"
+              SelectProps={{ native: true }}
+              value={sortDir}
+              variant="outlined"
+            >
+              {sortDirectionOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </TextField>
+          </Box>
+          <Box ml={2}>
+            <Button variant="outlined" onClick={() => handleSortQuery()}>
+              Sort
+            </Button>
+          </Box>
+          <Box flexGrow={1} />
+        </Box>
+
         <CardHeader action={<div />} title="Bookings" />
         <Divider />
         {/* <Scrollbar> */}
         <Box sx={{ minWidth: 1150 }}>
-          <Table>
+          <Table sx={{ minWidth: 700 }}>
             <TableHead>
               <TableRow>
                 {/* <TableCell padding="checkbox">
@@ -188,10 +433,13 @@ const BookingListTable = (props) => {
                     onChange={handleSelectAllOrders}
                   />
                 </TableCell> */}
+                <TableCell>Booking Ref No.</TableCell>
                 <TableCell>Booking Schedule</TableCell>
                 <TableCell>Customer</TableCell>
+                <TableCell>Customer email</TableCell>
                 <TableCell>Survey Type</TableCell>
                 <TableCell>Address of survey land</TableCell>
+                <TableCell>Survey Engineer</TableCell>
                 {/* <TableCell>
                     Total
                   </TableCell> */}
@@ -201,14 +449,14 @@ const BookingListTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {bookings.data.map((booking) => {
-                const isBookingSelected = selectedOrders.includes(booking.id);
+              {bookingsState.data.map((booking) => {
+                // const isBookingSelected = selectedOrders.includes(booking.id);
 
                 return (
                   <TableRow
                     hover
                     key={booking.id}
-                    selected={selectedOrders.indexOf(booking.id) !== -1}
+                    // selected={selectedOrders.indexOf(booking.id) !== -1}
                   >
                     {/* <TableCell padding="checkbox">
                       <Checkbox
@@ -220,6 +468,11 @@ const BookingListTable = (props) => {
                         value={isOrderSelected}
                       />
                     </TableCell> */}
+                    <TableCell>
+                      <Typography color="textPrimary" variant="subtitle2">
+                        # {booking.id}
+                      </Typography>
+                    </TableCell>
                     <TableCell>
                       <Typography color="textPrimary" variant="subtitle2">
                         {booking.schedule_date}
@@ -236,6 +489,7 @@ const BookingListTable = (props) => {
                         {booking.phone_no}
                       </Typography>
                     </TableCell>
+                    <TableCell>{booking.email}</TableCell>
                     <TableCell>{booking.survey_type}</TableCell>
                     <TableCell>
                       {joinAddress([
@@ -245,6 +499,7 @@ const BookingListTable = (props) => {
                         booking.land_postal_code
                       ])}
                     </TableCell>
+                    <TableCell>{_.get(booking, 'user.name')}</TableCell>
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
                       <SeverityPill
@@ -290,7 +545,7 @@ const BookingListTable = (props) => {
         {/* </Scrollbar> */}
         <TablePagination
           component="div"
-          count={orders.length}
+          count={_.get(bookingsState, 'meta.pagination.total')}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={page}
@@ -298,10 +553,10 @@ const BookingListTable = (props) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
-      <OrderListBulkActions
+      {/* <OrderListBulkActions
         open={enableBulkActions}
         selected={selectedOrders}
-      />
+      /> */}
       <BookingConfirmationModal handleAction={handleAssignAction} />
     </>
   );

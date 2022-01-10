@@ -30,23 +30,6 @@ iAxios.interceptors.request.use(config => {
   return config;
 });
 
-const getAllDockReceipts = (page = 1, perPage = 15, params = {}) => {
-  const defaultParams = {
-    include: 'verified,shipper',
-    sort: '-id',
-    per_page: perPage,
-    page,
-    ...params
-  };
-  return iAxios.get(`/dock-receipts`, {
-    params: defaultParams
-  });
-};
-
-const getUsersAll = (params = {}) => {
-  return iAxios.get('/users', { params });
-};
-
 const postCreateBooking = (params = {}) => {
   return iAxios.post('/booking', params);
 };
@@ -55,12 +38,17 @@ const getAllBookings = (params = {}) => {
   return iAxios.get(`/booking`, { params });
 };
 
-const getUserProfileImage = (userId, params = {}) => {
-  return iAxios.get(`/users/${userId}/profile-image`, { params });
-};
-
-const postAddUserToDepartment = (userId, departmentId, params = {}) => {
-  return iAxios.post(`/users/${userId}/department/${departmentId}`, params);
+const getAllBookingsFiltered = (page = 1, perPage = 5, params = {}) => {
+  const defaultParams = {
+    include: 'verified,shipper',
+    sort: '-id',
+    per_page: perPage,
+    page,
+    ...params
+  };
+  return iAxios.get(`/booking`, {
+    params: defaultParams
+  });
 };
 
 const postConfirmBooking = (bookingId, params = {}) => {
@@ -80,6 +68,7 @@ export {
   postCreateBooking,
   postConfirmBooking,
   postAssignBooking,
-  postCompleteBooking
+  postCompleteBooking,
+  getAllBookingsFiltered
 };
 export default iAxios;

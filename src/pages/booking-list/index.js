@@ -170,7 +170,8 @@ export const getServerSideProps = async ({ req, query }) => {
   // const params = new URLSearchParams(query);
 
   let bookingQuery = {
-    sort: '-schedule_date'
+    sort: '-id',
+    include: 'user'
   };
   let isOnMyBooking = false;
   try {
