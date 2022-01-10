@@ -11,7 +11,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  Button
 } from '@mui/material';
 // import Logo from '../../Logo';
 import Scrollbar from '../../Scrollbar';
@@ -172,7 +173,7 @@ const BookingPreview = (props) => {
                       gutterBottom
                       variant="subtitle2"
                     >
-                      Apointment notes
+                      Appointment notes
                     </Typography>
                   </TableCell>
                   <TableCell>{booking.data.appointment_notes}</TableCell>
