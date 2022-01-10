@@ -142,9 +142,9 @@ const BookingListTable = (props) => {
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const [query, setQuery] = useState('-');
+  const [query, setQuery] = useState('');
   const [sort, setSort] = useState('id');
-  const [sortDir, setSortDir] = useState('');
+  const [sortDir, setSortDir] = useState('-');
   const { booking, forType } = useSelector((state) => state.booking);
   const [searchByValue, setSearchByValue] = useState('filter[id]');
 
