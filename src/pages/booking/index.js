@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import wait from 'src/utils/wait';
 import router from 'next/router';
 import _ from 'lodash';
+import nProgress from 'nprogress';
 import {
   Box,
   Button,
@@ -31,7 +32,13 @@ import {
   CardActions,
   FormControlLabel,
   Popover,
-  Card
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContentText,
+  DialogContent,
+  DialogTitle,
+  AlertTitle
 } from '@mui/material';
 import { postCreateBooking } from 'src/api';
 
@@ -57,51 +64,95 @@ const survey_type = [
 const phoneRegExp =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
-function AlertDialog() {
-  const [open, setOpen] = React.useState(false);
+const Booking = ({ timeslot, surveyTypeHints }) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const today = new Date();
+  const [openAlertDialog, setOpenAlertDialog] = useState(false);
+  const [openBookSuccessDialog, setOpenBookSuccessDialog] = useState(false);
+  const [alertDialogErrors, setAlertDialogError] = useState(false);
+  const [successBookingIdUrl, setSuccessBookingIdUrl] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleCloseAlertDialog = () => {
+    setOpenAlertDialog(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseBookSuccess = () => {
+    setOpenBookSuccessDialog(false);
   };
 
-  return (
-    <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button>
+  function BookingSuccessDialog({ open, handleClose, message }) {
+    return (
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="book-dialog-title"
+        aria-describedby="book-dialog-description"
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle id="book-dialog-title">{'Booking Success'}</DialogTitle>
+        <DialogContent>
+          <Alert severity="success">
+            {/* <AlertTitle>Please fix the following errors:</AlertTitle> */}
+            {'You have successfuly booked an appointment!'}
+          </Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              router.push(successBookingIdUrl);
+            }}
+            autoFocus
+          >
+            Proceed to booking summary
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  function AlertDialog({ open, handleClose }) {
+    const buildErrors = (errors) => {
+      const allErrors = [];
+      for (const [key, value] of Object.entries(errors)) {
+        allErrors.push(
+          value.map((message) => (
+            <Typography key={key} variant="subtitle2">
+              * {message}
+            </Typography>
+          ))
+        );
+      }
+
+      return allErrors;
+    };
+
+    return (
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        maxWidth="sm"
+        fullWidth
       >
         <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
+          {'Booking Form Errors'}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
+          <Alert severity="error">
+            <AlertTitle>Please fix the following errors:</AlertTitle>
+            {buildErrors(alertDialogErrors)}
+          </Alert>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
           <Button onClick={handleClose} autoFocus>
-            Agree
+            Close
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
-  );
-}
-
-const Booking = ({ timeslot, surveyTypeHints }) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const today = new Date();
+    );
+  }
 
   return (
     <Box
@@ -163,15 +214,21 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
               // console.log(values, 'values');
               const response = await postCreateBooking(values);
               setStatus({ success: true });
-              enqueueSnackbar('You have successfuly booked an appointment!', {
-                variant: 'success'
-              });
-              await wait(500);
+              // enqueueSnackbar('You have successfuly booked an appointment!', {
+              //   variant: 'success'
+              // });
+              setSuccessBookingIdUrl(
+                `/booking/details/${response.data.data.id}`
+              );
+              setOpenBookSuccessDialog(true);
+              await wait(5000);
               router.push(`/booking/details/${response.data.data.id}`);
             } catch (err) {
               // console.log(err, 'err');
-              setStatus({ success: false });
               setErrors(err.response.data.errors[0].detail);
+              setAlertDialogError(err.response.data.errors[0].detail);
+              setOpenAlertDialog(true);
+              setStatus({ success: false });
               setSubmitting(false);
             }
           }}
@@ -788,6 +845,14 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
                   </Button>
                 </CardActions>
               </Box>
+              <AlertDialog
+                open={openAlertDialog}
+                handleClose={handleCloseAlertDialog}
+              />
+              <BookingSuccessDialog
+                open={openBookSuccessDialog}
+                handleClose={handleCloseBookSuccess}
+              />
             </form>
           )}
         </Formik>
