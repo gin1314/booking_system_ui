@@ -14,7 +14,7 @@ import {
   Typography
 } from '@mui/material';
 import _ from 'lodash';
-import { BookingPreview } from 'src/components/dashboard/invoice';
+import { BookingPreview, BookingPDF } from 'src/components/dashboard/invoice';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 import useSettings from 'src/hooks/useSettings';
 import ArrowLeftIcon from 'src/icons/ArrowLeft';
@@ -84,15 +84,15 @@ const InvoiceDetails = ({ booking }) => {
                 >
                   Preview PDF
                 </Button> */}
-                {/* <PDFDownloadLink
-                  document={<InvoicePDF invoice={invoice} />}
-                  fileName="invoice"
+                <PDFDownloadLink
+                  document={<BookingPDF booking={booking.data} />}
+                  fileName={`booking-${booking.data.id}`}
                   style={{ textDecoration: 'none' }}
                 >
                   <Button color="primary" sx={{ m: 1 }} variant="contained">
                     Download PDF
                   </Button>
-                </PDFDownloadLink> */}
+                </PDFDownloadLink>
               </Box>
             </Grid>
           </Grid>
