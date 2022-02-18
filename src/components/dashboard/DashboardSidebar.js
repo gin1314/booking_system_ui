@@ -28,6 +28,11 @@ const adminSections = [
         path: '/booking-list',
         icon: <ReceiptIcon fontSize="small" />
       },
+      {
+        title: 'Billing',
+        path: '/billing',
+        icon: <ReceiptIcon fontSize="small" />
+      },
       // {
       //   title: 'Billing',
       //   path: '/dashboard/finance',
@@ -45,11 +50,11 @@ const adminSections = [
         children: [
           {
             title: 'Create User',
-            path: '/dashboard/customers'
+            path: '/users/create'
           },
           {
             title: 'List User',
-            path: '/dashboard/customers/1'
+            path: '/users'
           }
         ]
       }

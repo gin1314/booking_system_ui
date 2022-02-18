@@ -8,7 +8,7 @@ const initialSettings = {
   direction: 'ltr',
   responsiveFontSizes: true,
   roundedCorners: false,
-  theme: THEMES.LIGHT
+  theme: process.env.isStaging ? THEMES.DARK : THEMES.LIGHT
 };
 
 export const restoreSettings = () => {
