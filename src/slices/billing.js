@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isModalOpen: false,
-  isAssingToEngrModalOpen: false,
   selectedBookingId: null,
   booking: {},
   forType: '',
@@ -15,22 +14,13 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: 'booking',
+  name: 'billing',
   initialState,
   reducers: {
     openModal(state, action) {
       state.isModalOpen = true;
       state.booking = action.payload.booking;
       state.forType = action.payload.forType;
-    },
-    openAssignToEngrModal(state, action) {
-      state.isAssingToEngrModalOpen = true;
-      state.booking = action.payload.booking;
-      state.forType = action.payload.forType;
-    },
-    closeAssignToEngrModal(state, action) {
-      state.isAssingToEngrModalOpen = false;
-      state.selectedBookingId = null;
     },
     closeModal(state) {
       state.isModalOpen = false;
@@ -50,24 +40,12 @@ const slice = createSlice({
 
 export const { reducer } = slice;
 
-export const openModal =
-  ({ booking, forType }) =>
-  (dispatch) => {
-    dispatch(slice.actions.openModal({ booking, forType }));
-  };
+export const openModal = ({booking, forType}) => (dispatch) => {
+  dispatch(slice.actions.openModal({ booking, forType }));
+};
 
 export const closeModal = () => (dispatch) => {
   dispatch(slice.actions.closeModal());
-};
-
-export const openAssignToEngrModal =
-  ({ booking, forType }) =>
-  (dispatch) => {
-    dispatch(slice.actions.openAssignToEngrModal({ booking, forType }));
-  };
-
-export const closeAssignToEngrModal = () => (dispatch) => {
-  dispatch(slice.actions.closeAssignToEngrModal());
 };
 
 export const setModalLabels =

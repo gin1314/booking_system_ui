@@ -34,13 +34,14 @@ import { useSnackbar } from 'notistack';
 import _ from 'lodash';
 import SearchIcon from 'src/icons/Search';
 import OrderListBulkActions from './OrderListBulkActions';
-import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
+import { closeModal, openModal, setModalLabels, closeAssignToEngrModal, openAssignToEngrModal } from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
 import { postAssignBooking, getAllBookingsFiltered } from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import NProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
+import AssignToEngrModal from './dialogs/AssignToEngrModal';
 
 const severityMap = {
   completed: 'success',
@@ -274,13 +275,13 @@ const BookingListTable = (props) => {
   };
 
   const initiaizelAssignDialog = async (booking) => {
-    dispatch(openModal({ booking, forType: 'assign' }));
+    dispatch(openAssignToEngrModal({ booking, forType: 'assign' }));
     dispatch(
       setModalLabels({
         title: 'Assign Confirmation',
         closeLabel: 'Close',
         agreeLabel: 'Assign',
-        body: 'Are you sure you want to assign this booking to your account?'
+        body: 'Assign this booking to an Engineer'
       })
     );
   };
@@ -291,13 +292,13 @@ const BookingListTable = (props) => {
       enqueueSnackbar('Booking successfully assigned to you!', {
         variant: 'success'
       });
-      dispatch(closeModal());
+      dispatch(closeAssignToEngrModal());
       router.push('/booking-list?my-bookings=true');
     } catch (error) {
       enqueueSnackbar('Something went wrong', {
         variant: 'error'
       });
-      dispatch(closeModal());
+      dispatch(closeAssignToEngrModal());
     }
   };
 
@@ -309,23 +310,15 @@ const BookingListTable = (props) => {
           size="small"
           onClick={() => initiaizelAssignDialog(booking)}
         >
-          Assign
+          Assign to Engr
         </Button>
       );
     }
 
-    if (booking.user_id && booking.user_id !== user.user.id) {
+    if (booking.user_id && booking.user_id !== user.user.id && booking.status !== 'completed') {
       return (
         <Button variant="text" size="small">
           Assigned
-        </Button>
-      );
-    }
-
-    if (booking.user_id === user.user.id) {
-      return (
-        <Button variant="text" size="small">
-          Assigned to you
         </Button>
       );
     }
@@ -558,6 +551,7 @@ const BookingListTable = (props) => {
         selected={selectedOrders}
       /> */}
       <BookingConfirmationModal handleAction={handleAssignAction} />
+      <AssignToEngrModal handleAction={handleAssignAction} />
     </>
   );
 };

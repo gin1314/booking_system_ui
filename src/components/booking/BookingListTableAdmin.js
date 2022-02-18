@@ -140,7 +140,7 @@ const sortDirectionOptions = [
  * @param {*} props
  * @returns null
  */
-const BookingListTableEngineer = (props) => {
+const BookingListTableAdmin = (props) => {
   const { orders, bookings, user, ...other } = props;
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
@@ -332,6 +332,17 @@ const BookingListTableEngineer = (props) => {
                       </SeverityPill>
                     </TableCell>
                     <TableCell align="right">
+                      {booking.status === 'pending' && (
+                        <Tooltip title="Click this to confirm booking">
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => initiaizelConfirmnDialog(booking)}
+                          >
+                            Assign Booking
+                          </Button>
+                        </Tooltip>
+                      )}
                       {booking.status === 'confirmed' && (
                         <Tooltip title="Click this if you have completed the survey">
                           <Button
@@ -382,10 +393,10 @@ const BookingListTableEngineer = (props) => {
   );
 };
 
-BookingListTableEngineer.propTypes = {
+BookingListTableAdmin.propTypes = {
   orders: PropTypes.array.isRequired,
   bookings: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 
-export default BookingListTableEngineer;
+export default BookingListTableAdmin;

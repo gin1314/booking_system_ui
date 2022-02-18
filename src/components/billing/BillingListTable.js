@@ -6,6 +6,7 @@ import router from 'next/router';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import {
   Autocomplete,
   Box,
@@ -36,14 +37,14 @@ import PencilAltIcon from '../../icons/PencilAlt';
 // Label
 import MoreMenu from '../MoreMenu';
 import Scrollbar from '../Scrollbar';
-import OrderListBulkActions from './OrderListBulkActions';
 import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
 import { postConfirmBooking, postCompleteBooking } from 'src/api';
-import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
+// import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
+import BookingConfirmationModal from '../booking/dialogs/BookingConfirmationModal';
 
 const severityMap = {
   completed: 'success',
@@ -140,7 +141,7 @@ const sortDirectionOptions = [
  * @param {*} props
  * @returns null
  */
-const BookingListTableEngineer = (props) => {
+const BillingListTable = (props) => {
   const { orders, bookings, user, ...other } = props;
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
@@ -259,6 +260,7 @@ const BookingListTableEngineer = (props) => {
                 </TableCell> */}
                 <TableCell>Booking Schedule</TableCell>
                 <TableCell>Customer</TableCell>
+                <TableCell>Assigned Engineer</TableCell>
                 <TableCell>Survey Type</TableCell>
                 <TableCell>Address of survey land</TableCell>
                 {/* <TableCell>
@@ -266,6 +268,7 @@ const BookingListTableEngineer = (props) => {
                   </TableCell> */}
                 {/* <TableCell>Status</TableCell> */}
                 <TableCell>Booking Status</TableCell>
+                <TableCell>Amount</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -314,6 +317,9 @@ const BookingListTableEngineer = (props) => {
                         {booking.phone_no}
                       </Typography>
                     </TableCell>
+                    <TableCell>
+                      {_.get(booking, 'user.name')}
+                    </TableCell>
                     <TableCell>{booking.survey_type}</TableCell>
                     <TableCell>
                       {joinAddress([
@@ -331,7 +337,21 @@ const BookingListTableEngineer = (props) => {
                         {booking.status}
                       </SeverityPill>
                     </TableCell>
+                    <TableCell>
+
+                    </TableCell>
                     <TableCell align="right">
+                      {booking.status === 'completed' && (
+                        <Tooltip title="Click this to send invoice to the client">
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => initiaizelConfirmnDialog(booking)}
+                          >
+                            Make an Invoice
+                          </Button>
+                        </Tooltip>
+                      )}
                       {booking.status === 'confirmed' && (
                         <Tooltip title="Click this if you have completed the survey">
                           <Button
@@ -373,19 +393,16 @@ const BookingListTableEngineer = (props) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
-      <OrderListBulkActions
-        open={enableBulkActions}
-        selected={selectedOrders}
-      />
+
       <BookingConfirmationModal handleAction={handleAssignAction} />
     </>
   );
 };
 
-BookingListTableEngineer.propTypes = {
+BillingListTable.propTypes = {
   orders: PropTypes.array.isRequired,
   bookings: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 
-export default BookingListTableEngineer;
+export default BillingListTable;

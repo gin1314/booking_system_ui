@@ -10,6 +10,7 @@ import {
   Link,
   Typography
 } from '@mui/material';
+import _ from 'lodash';
 import {
   BookingListTable,
   BookingListTableEngineer
@@ -23,18 +24,13 @@ import PlusIcon from 'src/icons/Plus';
 // import gtm from '../../lib/gtm';
 import axios from 'src/lib/axios';
 import DashboardLayout from 'src/components/dashboard/DashboardLayout';
-import _ from 'lodash';
+import BillingListTable from 'src/components/billing/BillingListTable';
 
-const BookingTable = ({ role, isOnMyBooking = false, ...others }) => {
-  if (role === 'engineer' && isOnMyBooking) {
-    return <BookingListTableEngineer {...others} />;
-  }
-  if (!isOnMyBooking) {
-    return <BookingListTable {...others} />;
-  }
+const BillingTable = ({ role, ...others }) => {
+    return <BillingListTable {...others} />;
 };
 
-const BookingList = ({ bookings, user, isOnMyBooking }) => {
+const BillingList = ({ bookings, user, isOnMyBooking }) => {
   const isMountedRef = useIsMountedRef();
   const { settings } = useSettings();
   const [orders, setOrders] = useState([]);
@@ -76,74 +72,10 @@ const BookingList = ({ bookings, user, isOnMyBooking }) => {
               <Typography color="textPrimary" variant="h5">
                 {'Billing'}
               </Typography>
-              {/* <Breadcrumbs
-                aria-label="breadcrumb"
-                separator={<ChevronRightIcon fontSize="small" />}
-                sx={{ mt: 1 }}
-              >
-                <Link
-                  color="textPrimary"
-                  component={RouterLink}
-                  to="/dashboard"
-                  variant="subtitle2"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  color="textPrimary"
-                  component={RouterLink}
-                  to="/dashboard"
-                  variant="subtitle2"
-                >
-                  Management
-                </Link>
-                <Typography
-                  color="textSecondary"
-                  variant="subtitle2"
-                >
-                  Orders
-                </Typography>
-              </Breadcrumbs> */}
-              {/* <Box
-                sx={{
-                  mb: -1,
-                  mx: -1,
-                  mt: 1
-                }}
-              >
-                <Button
-                  color="primary"
-                  startIcon={<UploadIcon fontSize="small" />}
-                  sx={{ m: 1 }}
-                  variant="text"
-                >
-                  Import
-                </Button>
-                <Button
-                  color="primary"
-                  startIcon={<DownloadIcon fontSize="small" />}
-                  sx={{ m: 1 }}
-                  variant="text"
-                >
-                  Export
-                </Button>
-              </Box> */}
-            </Grid>
-            <Grid item>
-              {/* <Box sx={{ m: -1 }}>
-                <Button
-                  color="primary"
-                  startIcon={<PlusIcon fontSize="small" />}
-                  sx={{ m: 1 }}
-                  variant="contained"
-                >
-                  New Order
-                </Button>
-              </Box> */}
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            <BookingTable
+            <BillingTable
               role={user.user.role}
               isOnMyBooking={isOnMyBooking}
               orders={orders}
@@ -157,7 +89,7 @@ const BookingList = ({ bookings, user, isOnMyBooking }) => {
   );
 };
 
-BookingList.Layout = DashboardLayout;
+BillingList.Layout = DashboardLayout;
 
 export const getServerSideProps = async ({ req, query }) => {
   const {
@@ -170,9 +102,9 @@ export const getServerSideProps = async ({ req, query }) => {
 
   let bookingQuery = {
     sort: '-id',
-    include: 'user'
+    include: 'user',
+    'filter[status]': 'completed'
   };
-  let isOnMyBooking = false;
   try {
     const apiRespMe = await fetch(`${process.env.apiBaseURLLocal}/auth/me`, {
       method: 'GET',
@@ -185,10 +117,6 @@ export const getServerSideProps = async ({ req, query }) => {
 
     user = await apiRespMe.json();
 
-    if (_.get(query, 'my-bookings')) {
-      bookingQuery['filter[user_id]'] = user.user.id;
-      isOnMyBooking = true;
-    }
     const allQuery = new URLSearchParams(bookingQuery).toString();
 
     const apiResp = await fetch(
@@ -221,9 +149,8 @@ export const getServerSideProps = async ({ req, query }) => {
     props: {
       bookings,
       user,
-      isOnMyBooking
     }
   };
 };
 
-export default BookingList;
+export default BillingList;

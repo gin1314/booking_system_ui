@@ -24,12 +24,17 @@ import PlusIcon from 'src/icons/Plus';
 import axios from 'src/lib/axios';
 import DashboardLayout from 'src/components/dashboard/DashboardLayout';
 import _ from 'lodash';
+import BookingListTableAdmin from 'src/components/booking/BookingListTableAdmin';
 
 const BookingTable = ({ role, isOnMyBooking = false, ...others }) => {
-  if (role === 'engineer' && isOnMyBooking) {
+  if (role === 'engineer') {
     return <BookingListTableEngineer {...others} />;
   }
-  if (!isOnMyBooking) {
+  // if (role === 'admin') {
+  //   return <BookingListTableAdmin {...others} />;
+  // }
+
+  if (role === 'admin') {
     return <BookingListTable {...others} />;
   }
 };

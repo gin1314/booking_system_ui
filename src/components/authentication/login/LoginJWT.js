@@ -38,7 +38,12 @@ const LoginJWT = (props) => {
             setStatus({ success: true });
             setSubmitting(false);
           }
-          router.push('/booking-list');
+          if (_.get(loginResponse, 'data.user.role') === 'admin') {
+            router.push('/booking-list');
+          }
+          if (_.get(loginResponse, 'data.user.role') === 'engineer') {
+            router.push('/booking-list?my-bookings=true');
+          }
         } catch (err) {
           Cookie.remove('token');
           if (isMountedRef.current) {

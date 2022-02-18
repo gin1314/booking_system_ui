@@ -66,11 +66,11 @@ const engrSections = [
   {
     title: 'General',
     items: [
-      {
-        title: 'Bookings / Transactions',
-        path: '/booking-list',
-        icon: <ReceiptIcon fontSize="small" />
-      },
+      // {
+      //   title: 'Bookings / Transactions',
+      //   path: '/booking-list',
+      //   icon: <ReceiptIcon fontSize="small" />
+      // },
       {
         title: 'Assigned Bookings',
         path: '/booking-list?my-bookings=true',
