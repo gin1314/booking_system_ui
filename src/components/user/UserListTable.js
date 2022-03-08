@@ -194,7 +194,6 @@ const UserListTable = (props) => {
       const sorting = { sort: `${sortDir}${sort}` };
       try {
         response = await getAllUsersFiltered(newPage + 1, limit, {
-          include: 'user',
           [searchByValue]: query,
           ...sorting
           // ...defaultFilter
@@ -247,7 +246,6 @@ const UserListTable = (props) => {
         NProgress.start();
         try {
           response = await getAllUsersFiltered(page + 1, limit, {
-            include: 'user',
             [searchByValue]: query,
             // ...defaultFilter
             ...sorting
@@ -272,7 +270,6 @@ const UserListTable = (props) => {
       NProgress.start();
       try {
         response = await getAllUsersFiltered(page + 1, limit, {
-          include: 'user',
           [searchByValue]: query,
           // ...defaultFilter
           ...sorting
@@ -299,50 +296,6 @@ const UserListTable = (props) => {
         body: 'Assign this booking to an Engineer'
       })
     );
-  };
-
-  const handleAssignAction = async () => {
-    try {
-      await postAssignBooking(booking.id, { user_id: assignedUserId });
-      enqueueSnackbar('Booking successfully assigned!', {
-        variant: 'success'
-      });
-      dispatch(closeAssignToEngrModal());
-      window.location = '/booking-list';
-    } catch (error) {
-      enqueueSnackbar('Something went wrong', {
-        variant: 'error'
-      });
-      dispatch(closeAssignToEngrModal());
-    }
-  };
-
-  const ActionButtons = ({ booking }) => {
-    if (!booking.user_id) {
-      return (
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={() => initiaizelAssignDialog(booking)}
-        >
-          Assign to Engr
-        </Button>
-      );
-    }
-
-    if (
-      booking.user_id &&
-      booking.user_id !== user.user.id &&
-      booking.status !== 'completed'
-    ) {
-      return (
-        <Button variant="text" size="small">
-          Assigned
-        </Button>
-      );
-    }
-
-    return null;
   };
 
   return (
@@ -513,9 +466,7 @@ const UserListTable = (props) => {
 };
 
 UserListTable.propTypes = {
-  orders: PropTypes.array.isRequired,
-  bookings: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  users: PropTypes.array.isRequired
 };
 
 export default UserListTable;

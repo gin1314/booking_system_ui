@@ -97,7 +97,7 @@ const EditUser = ({ user }) => {
         <DialogContent>
           <Alert severity="success">
             {/* <AlertTitle>Please fix the following errors:</AlertTitle> */}
-            {'You have successfuly created a user!'}
+            {'You have successfuly edited a user!'}
           </Alert>
         </DialogContent>
         <DialogActions>
@@ -175,7 +175,7 @@ const EditUser = ({ user }) => {
           <Grid container justifyContent="space-between" spacing={3}>
             <Grid item>
               <Typography color="textPrimary" variant="h5">
-                {'Create New User'}
+                {'Edit User'}
               </Typography>
             </Grid>
           </Grid>
@@ -206,8 +206,8 @@ const EditUser = ({ user }) => {
                 try {
                   // console.log(values, 'values');
                   const changedValues = diffObjectChange(values, initialValues);
-                  const response = await putUpdateUserApi(user.id, changedValues);
-                  console.log(changedValues, 'changed value');
+                  await putUpdateUserApi(user.id, changedValues);
+
                   setStatus({ success: true });
                   enqueueSnackbar('User successfully edited!', {
                     variant: 'success'
@@ -216,7 +216,6 @@ const EditUser = ({ user }) => {
                   await wait(5000);
                   window.location = `/users/${user.id}/edit`;
                 } catch (err) {
-                  // console.log(err, 'err');
                   setErrors(err.response.data.errors[0].detail);
                   setAlertDialogError(err.response.data.errors[0].detail);
                   setOpenAlertDialog(true);

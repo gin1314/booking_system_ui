@@ -110,9 +110,7 @@ const UserList = ({ users, user }) => {
           </Grid>
           <Box sx={{ mt: 3 }}>
             <UserListTable
-              role={user.user.role}
               users={users}
-              user={user}
             />
           </Box>
         </Container>
