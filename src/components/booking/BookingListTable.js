@@ -104,6 +104,10 @@ const searchByOptions = [
   {
     value: 'filter[email]',
     label: 'Client email'
+  },
+  {
+    value: 'filter[status]',
+    label: 'Status'
   }
 ];
 

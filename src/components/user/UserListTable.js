@@ -1,6 +1,4 @@
 import { useState } from 'react';
-// import { Link as RouterLink } from 'react-router-dom';
-// import NextLink from 'src/components/NextLink';
 import NextLink from 'next/link';
 import router from 'next/router';
 import { format } from 'date-fns';
@@ -486,7 +484,13 @@ const UserListTable = (props) => {
                     <TableCell>{user.phone_no}</TableCell>
                     <TableCell>{user.role}</TableCell>
                     <TableCell>{user.address}</TableCell>
-                    <TableCell align="right"></TableCell>
+                    <TableCell align="right">
+                      <NextLink href={`users/${user.id}/edit`} passHref>
+                        <Button variant="text" size="small">
+                          Edit
+                        </Button>
+                      </NextLink>
+                    </TableCell>
                   </TableRow>
                 );
               })}
