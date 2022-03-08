@@ -33,15 +33,21 @@ import {
 import { useSnackbar } from 'notistack';
 import _ from 'lodash';
 import SearchIcon from 'src/icons/Search';
-import OrderListBulkActions from './OrderListBulkActions';
-import { closeModal, openModal, setModalLabels, closeAssignToEngrModal, openAssignToEngrModal } from 'src/slices/booking';
+import {
+  closeModal,
+  openModal,
+  setModalLabels,
+  closeAssignToEngrModal,
+  openAssignToEngrModal
+} from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
-import { postAssignBooking, getAllBookingsFiltered } from 'src/api';
-import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
-import Label from '../Label';
+import {
+  postAssignBooking,
+  getAllBookingsFiltered,
+  getAllUsersFiltered
+} from 'src/api';
 import NProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
-import AssignToEngrModal from './dialogs/AssignToEngrModal';
 
 const severityMap = {
   completed: 'success',
@@ -82,39 +88,51 @@ const SetStatusSelect = ({ bookingId, status }) => {
 
 const searchByOptions = [
   {
-    value: 'filter[id]',
-    label: 'Reference no.'
-  },
-  {
-    value: 'filter[schdule_date]',
-    label: 'Schedule date'
-  },
-  {
-    value: 'filter[first_name]',
-    label: 'Client first name'
-  },
-  {
-    value: 'filter[last_name]',
-    label: 'client last name'
-  },
-  {
-    value: 'filter[phone_no]',
-    label: 'Client phone no.'
+    value: 'filter[name]',
+    label: 'Name'
   },
   {
     value: 'filter[email]',
-    label: 'Client email'
+    label: 'Email'
+  },
+  {
+    value: 'filter[phone_no]',
+    label: 'Phone no.'
+  },
+  {
+    value: 'filter[role]',
+    label: 'Role'
+  },
+  {
+    value: 'filter[address]',
+    label: 'Address'
   }
 ];
 
 const sortOptions = [
   {
     value: 'id',
-    label: 'Reference No.'
+    label: 'Id'
   },
   {
-    value: 'schedule_date',
-    label: 'Schedule date'
+    value: 'name',
+    label: 'Name'
+  },
+  {
+    value: 'email',
+    label: 'Email'
+  },
+  {
+    value: 'phone_no',
+    label: 'Phone no.'
+  },
+  {
+    value: 'role',
+    label: 'Role'
+  },
+  {
+    value: 'address',
+    label: 'Address'
   },
   {
     value: 'created_at',
@@ -138,16 +156,18 @@ const sortDirectionOptions = [
  * @param {*} props
  * @returns null
  */
-const BookingListTable = (props) => {
-  const { orders, bookings, user, ...other } = props;
-  const [bookingsState, setBookingsState] = useState(bookings);
+const UserListTable = (props) => {
+  const { users, ...other } = props;
+  const [usersState, setUsersState] = useState(users);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('id');
   const [sortDir, setSortDir] = useState('-');
-  const { booking, forType, assignedUserId } = useSelector((state) => state.booking);
-  const [searchByValue, setSearchByValue] = useState('filter[id]');
+  const { booking, forType, assignedUserId } = useSelector(
+    (state) => state.booking
+  );
+  const [searchByValue, setSearchByValue] = useState('filter[name]');
 
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -175,13 +195,13 @@ const BookingListTable = (props) => {
       NProgress.start();
       const sorting = { sort: `${sortDir}${sort}` };
       try {
-        response = await getAllBookingsFiltered(newPage + 1, limit, {
+        response = await getAllUsersFiltered(newPage + 1, limit, {
           include: 'user',
           [searchByValue]: query,
           ...sorting
           // ...defaultFilter
         });
-        setBookingsState(response.data);
+        setUsersState(response.data);
         setPage(newPage);
         NProgress.done();
       } catch (err) {
@@ -200,13 +220,13 @@ const BookingListTable = (props) => {
       const sorting = { sort: `${sortDir}${sort}` };
 
       try {
-        response = await getAllBookingsFiltered(page + 1, event.target.value, {
-          include: 'user',
+        response = await getAllUsersFiltered(page + 1, event.target.value, {
+          //   include: 'user',
           [searchByValue]: query,
           // ...defaultFilter
           ...sorting
         });
-        setBookingsState(response.data);
+        setUsersState(response.data);
         setLimit(parseInt(event.target.value));
         NProgress.done();
       } catch (err) {
@@ -216,7 +236,6 @@ const BookingListTable = (props) => {
       }
       return response;
     })().then((data) => {});
-    // setLimit(parseInt(event.target.value));
   };
 
   const handleOnPressEnterQuery = (e) => {
@@ -229,13 +248,13 @@ const BookingListTable = (props) => {
         let response;
         NProgress.start();
         try {
-          response = await getAllBookingsFiltered(page + 1, limit, {
+          response = await getAllUsersFiltered(page + 1, limit, {
             include: 'user',
             [searchByValue]: query,
             // ...defaultFilter
             ...sorting
           });
-          setBookingsState(response.data);
+          setUsersState(response.data);
           setPage(page);
           NProgress.done();
         } catch (err) {
@@ -250,18 +269,17 @@ const BookingListTable = (props) => {
 
   const handleSortQuery = (e) => {
     const sorting = { sort: `${sortDir}${sort}` };
-    // if (e.key === 'Enter') {
     (async () => {
       let response;
       NProgress.start();
       try {
-        response = await getAllBookingsFiltered(page + 1, limit, {
+        response = await getAllUsersFiltered(page + 1, limit, {
           include: 'user',
           [searchByValue]: query,
           // ...defaultFilter
           ...sorting
         });
-        setBookingsState(response.data);
+        setUsersState(response.data);
         setPage(page);
         NProgress.done();
       } catch (err) {
@@ -271,7 +289,6 @@ const BookingListTable = (props) => {
       }
       return response;
     })();
-    // }
   };
 
   const initiaizelAssignDialog = async (booking) => {
@@ -315,7 +332,11 @@ const BookingListTable = (props) => {
       );
     }
 
-    if (booking.user_id && booking.user_id !== user.user.id && booking.status !== 'completed') {
+    if (
+      booking.user_id &&
+      booking.user_id !== user.user.id &&
+      booking.status !== 'completed'
+    ) {
       return (
         <Button variant="text" size="small">
           Assigned
@@ -418,37 +439,23 @@ const BookingListTable = (props) => {
           <Table sx={{ minWidth: 700 }}>
             <TableHead>
               <TableRow>
-                {/* <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedAllOrders}
-                    color="primary"
-                    indeterminate={selectedSomeOrders}
-                    onChange={handleSelectAllOrders}
-                  />
-                </TableCell> */}
-                <TableCell>Booking Ref No.</TableCell>
-                <TableCell>Booking Schedule</TableCell>
-                <TableCell>Customer</TableCell>
-                <TableCell>Customer email</TableCell>
-                <TableCell>Survey Type</TableCell>
-                <TableCell>Address of survey land</TableCell>
-                <TableCell>Survey Engineer</TableCell>
-                {/* <TableCell>
-                    Total
-                  </TableCell> */}
-                {/* <TableCell>Status</TableCell> */}
-                <TableCell>Booking Status</TableCell>
+                <TableCell>Id</TableCell>
+                <TableCell>Full Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Phone no.</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Address</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {bookingsState.data.map((booking) => {
+              {usersState.data.map((user) => {
                 // const isBookingSelected = selectedOrders.includes(booking.id);
 
                 return (
                   <TableRow
                     hover
-                    key={booking.id}
+                    key={user.id}
                     // selected={selectedOrders.indexOf(booking.id) !== -1}
                   >
                     {/* <TableCell padding="checkbox">
@@ -463,72 +470,23 @@ const BookingListTable = (props) => {
                     </TableCell> */}
                     <TableCell>
                       <Typography color="textPrimary" variant="subtitle2">
-                        # {booking.id}
+                        # {user.id}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography color="textPrimary" variant="subtitle2">
-                        {booking.schedule_date}
+                        {user.name}
                       </Typography>
+                    </TableCell>
+                    <TableCell>
                       <Typography color="textSecondary" variant="body2">
-                        {booking.timeslot.time_slot_word}
+                        {user.email}
                       </Typography>
                     </TableCell>
-                    <TableCell>
-                      <Typography color="textPrimary" variant="subtitle2">
-                        {`${booking.first_name} ${booking.last_name}`}
-                      </Typography>
-                      <Typography color="textSecondary" variant="body2">
-                        {booking.phone_no}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>{booking.email}</TableCell>
-                    <TableCell>{booking.survey_type}</TableCell>
-                    <TableCell>
-                      {joinAddress([
-                        booking.land_street,
-                        booking.land_city,
-                        booking.land_region,
-                        booking.land_postal_code
-                      ])}
-                    </TableCell>
-                    <TableCell>{_.get(booking, 'user.name')}</TableCell>
-                    {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
-                    <TableCell>
-                      <SeverityPill
-                        color={severityMap[booking.status] || 'warning'}
-                      >
-                        {booking.status}
-                      </SeverityPill>
-                    </TableCell>
-                    <TableCell align="right">
-                      {/* {booking.user_id && booking.user_id !== user.user.id ? (
-                        <Button variant="text" size="small">
-                          Assigned
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => initiaizelAssignDialog(booking)}
-                        >
-                          Assign
-                        </Button>
-                      )} */}
-                      <ActionButtons booking={booking} />
-                      {/* <NextLink href="/" passHref>
-                        <Button variant="outlined">Assign</Button>
-                      </NextLink> */}
-
-                      {/* <IconButton>
-                        <PencilAltIcon fontSize="small" />
-                      </IconButton> */}
-                      {/* <NextLink href="order/dasd"> */}
-                      {/* <IconButton>
-                        <ArrowRightIcon fontSize="small" />
-                      </IconButton> */}
-                      {/* </NextLink> */}
-                    </TableCell>
+                    <TableCell>{user.phone_no}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                    <TableCell>{user.address}</TableCell>
+                    <TableCell align="right"></TableCell>
                   </TableRow>
                 );
               })}
@@ -538,7 +496,7 @@ const BookingListTable = (props) => {
         {/* </Scrollbar> */}
         <TablePagination
           component="div"
-          count={_.get(bookingsState, 'meta.pagination.total')}
+          count={_.get(usersState, 'meta.pagination.total')}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={page}
@@ -546,20 +504,14 @@ const BookingListTable = (props) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
-      {/* <OrderListBulkActions
-        open={enableBulkActions}
-        selected={selectedOrders}
-      /> */}
-      <BookingConfirmationModal handleAction={handleAssignAction} />
-      <AssignToEngrModal handleAction={handleAssignAction} />
     </>
   );
 };
 
-BookingListTable.propTypes = {
+UserListTable.propTypes = {
   orders: PropTypes.array.isRequired,
   bookings: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 
-export default BookingListTable;
+export default UserListTable;

@@ -11,10 +11,10 @@ const iAxios = axios.create({
 });
 
 iAxios.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
+  (error) => {
     if (error.response.status === 401) {
       router.push('/login');
     }
@@ -22,7 +22,7 @@ iAxios.interceptors.response.use(
   }
 );
 
-iAxios.interceptors.request.use(config => {
+iAxios.interceptors.request.use((config) => {
   if (window.Echo) {
     config.headers['X-Socket-ID'] = window.Echo.socketId();
   }
@@ -40,7 +40,6 @@ const getAllBookings = (params = {}) => {
 
 const getAllBookingsFiltered = (page = 1, perPage = 5, params = {}) => {
   const defaultParams = {
-    include: 'verified,shipper',
     sort: '-id',
     per_page: perPage,
     page,
@@ -67,6 +66,16 @@ const getAllUsers = (params = {}) => {
   return iAxios.get(`/user`, { params });
 };
 
+const getAllUsersFiltered = (page = 1, perPage = 5, params = {}) => {
+  const defaultParams = {
+    sort: '-id',
+    per_page: perPage,
+    page,
+    ...params
+  };
+  return iAxios.get(`/user`, { params: defaultParams });
+};
+
 const postCreateUser = (params = {}) => {
   return iAxios.post('/user', params);
 };
@@ -79,6 +88,7 @@ export {
   postCompleteBooking,
   getAllBookingsFiltered,
   getAllUsers,
+  getAllUsersFiltered,
   postCreateUser
 };
 export default iAxios;

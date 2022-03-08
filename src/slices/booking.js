@@ -6,6 +6,7 @@ const initialState = {
   selectedBookingId: null,
   booking: {},
   forType: '',
+  assignedUserId: null,
   modalParams: {
     title: '',
     close: 'Close',
@@ -44,6 +45,9 @@ const slice = createSlice({
         body: action.payload.body
       };
       //   state.selectedBookingId = null;
+    },
+    setAssignedUser(state, action) {
+      state.assignedUserId = action.payload.assignedUserId;
     }
   }
 });
@@ -83,4 +87,9 @@ export const setModalLabels =
     );
   };
 
+export const setAssignedUser =
+  ({ assignedUserId }) =>
+  (dispatch) => {
+    dispatch(slice.actions.setAssignedUser({ assignedUserId }));
+  };
 export default slice;

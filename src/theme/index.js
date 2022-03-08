@@ -212,6 +212,7 @@ export const createTheme = (config = {}) => {
   let themeOptions = themesOptions[config.theme];
 
   if (!themeOptions) {
+    // eslint-disable-next-line no-console
     console.warn(new Error(`The theme ${config.theme} is not valid`));
     themeOptions = themesOptions[THEMES.LIGHT];
   }

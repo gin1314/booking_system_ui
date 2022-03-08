@@ -17,8 +17,8 @@ import {
   Typography
 } from '@mui/material';
 import { useSelector, useDispatch } from 'src/store';
-import { closeAssignToEngrModal } from 'src/slices/booking';
-import { getAllBookings } from 'src/api';
+import { closeAssignToEngrModal, setAssignedUser } from 'src/slices/booking';
+import { getAllBookings, getAllUsers } from 'src/api';
 
 const AssignToEngrModal = (props) => {
   const {
@@ -46,9 +46,9 @@ const AssignToEngrModal = (props) => {
       const { from, q } = value;
       if (q === '') return [];
       setApiLoading(true);
-      getAllBookings({ 'filter[first_name]': q }).then((data) => {
+      getAllUsers({ 'filter[name]': q }).then((data) => {
         const options = data.data.data.map((v) => {
-          return { text: `${v.first_name}` , value: v.id };
+          return { text: `${v.name}`, value: v.id };
         });
 
         setEngrOptions(options);
@@ -69,7 +69,8 @@ const AssignToEngrModal = (props) => {
       onClose={onClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      maxWidth={'md'}
+      PaperProps={{ sx: { width: "30%" } }}
+
     >
       <DialogTitle id="alert-dialog-title">{modalParams.title}</DialogTitle>
       <DialogContent>
@@ -95,14 +96,14 @@ const AssignToEngrModal = (props) => {
             loading={apiLoading}
             loadingText={
               <Box display="flex" alignItems="center">
-                {/* <CircularProgress size={16} className={classes.loadingIcon} /> */}
+                <CircularProgress size={16} />
                 <Typography>Loading...</Typography>
               </Box>
             }
             onChange={(e, value) => {
-              // setFieldValue('shipper_id', value ? value.value : '');
+              dispatch(setAssignedUser({ assignedUserId: value.value }));
             }}
-            getOptionSelected={(option, value) => option.value === value.value}
+            // getOptionSelected={(option, value) => option.value === value.value}
             renderInput={(params) => (
               <TextField
                 // fullWidth
