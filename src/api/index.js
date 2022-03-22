@@ -62,6 +62,10 @@ const postCompleteBooking = (bookingId, params = {}) => {
   return iAxios.post(`/booking/complete/${bookingId}`, params);
 };
 
+const postCancelBooking = (bookingId, params = {}) => {
+  return iAxios.post(`/booking/cancel/${bookingId}`, params);
+};
+
 const getAllUsers = (params = {}) => {
   return iAxios.get(`/user`, { params });
 };
@@ -89,6 +93,7 @@ export {
   postCreateBooking,
   postConfirmBooking,
   postAssignBooking,
+  postCancelBooking,
   postCompleteBooking,
   getAllBookingsFiltered,
   getAllUsers,

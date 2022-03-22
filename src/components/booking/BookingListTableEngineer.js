@@ -39,7 +39,11 @@ import Scrollbar from '../Scrollbar';
 import OrderListBulkActions from './OrderListBulkActions';
 import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
-import { postConfirmBooking, postCompleteBooking } from 'src/api';
+import {
+  postConfirmBooking,
+  postCompleteBooking,
+  postCancelBooking
+} from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
@@ -141,7 +145,7 @@ const sortDirectionOptions = [
  * @returns null
  */
 const BookingListTableEngineer = (props) => {
-  const { orders, bookings, user, ...other } = props;
+  const { orders, bookings, user, isOnLotSurvey, isOnMyBooking, ...other } = props;
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -188,7 +192,7 @@ const BookingListTableEngineer = (props) => {
     );
   };
 
-  const initiaizelCompletedDialog = async (booking) => {
+  const initializelCompletedDialog = async (booking) => {
     dispatch(openModal({ booking, forType: 'completed' }));
     dispatch(
       setModalLabels({
@@ -200,7 +204,45 @@ const BookingListTableEngineer = (props) => {
     );
   };
 
-  const handleAssignAction = async () => {
+  const initializelCancelDialog = async (booking) => {
+    dispatch(openModal({ booking, forType: 'cancel' }));
+    dispatch(
+      setModalLabels({
+        title: 'Cancel Booking',
+        closeLabel: 'Close',
+        agreeLabel: 'Yes',
+        body: 'Are you sure you want to cancel this booking?'
+      })
+    );
+  };
+
+  const initializelUploadDialog = async (booking) => {
+    dispatch(openModal({ booking, forType: 'upload' }));
+    dispatch(
+      setModalLabels({
+        title: 'Upload Survey Lot file',
+        closeLabel: 'Close',
+        agreeLabel: 'Upload',
+        body: 'Attach survey lot file'
+      })
+    );
+  };
+
+  const initiaizelDialog = async (booking) => {
+    dispatch(openModal({ booking, forType: 'cancel' }));
+    dispatch(
+      setModalLabels({
+        title: 'Cancel Booking',
+        closeLabel: 'Close',
+        agreeLabel: 'Cancel',
+        body: 'Are you sure you want to cancel this booking?'
+      })
+    );
+  };
+
+  //@TODO create separate modal for uploading files
+
+  const handleModalAction = async () => {
     try {
       switch (forType) {
         case 'confirm':
@@ -211,6 +253,22 @@ const BookingListTableEngineer = (props) => {
               variant: 'success'
             }
           );
+          dispatch(closeModal());
+          router.push('/booking-list?my-bookings=true');
+          break;
+        case 'cancel':
+          await postCancelBooking(booking.id);
+          enqueueSnackbar('Booking successfully cancelled', {
+            variant: 'success'
+          });
+          dispatch(closeModal());
+          router.push('/booking-list?my-bookings=true');
+          break;
+        case 'upload':
+          // await postCancelBooking(booking.id);
+          enqueueSnackbar('Lot survey uploaded successfully', {
+            variant: 'success'
+          });
           dispatch(closeModal());
           router.push('/booking-list?my-bookings=true');
           break;
@@ -332,14 +390,39 @@ const BookingListTableEngineer = (props) => {
                       </SeverityPill>
                     </TableCell>
                     <TableCell align="right">
-                      {booking.status === 'confirmed' && (
+                      {booking.status === 'assigned' && (
                         <Tooltip title="Click this if you have completed the survey">
                           <Button
                             variant="outlined"
                             size="small"
-                            onClick={() => initiaizelCompletedDialog(booking)}
+                            onClick={() => initializelCompletedDialog(booking)}
                           >
                             Complete Booking
+                          </Button>
+                        </Tooltip>
+                      )}
+                      {booking.status === 'assigned' && (
+                        <Tooltip title="Cancel booking">
+                          <Button
+                            sx={{ ml: 1 }}
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            onClick={() => initializelCancelDialog(booking)}
+                          >
+                            Cancel Booking
+                          </Button>
+                        </Tooltip>
+                      )}
+                      {booking.status === 'completed' && (
+                        <Tooltip title="Upload lot survey">
+                          <Button
+                            sx={{ ml: 1 }}
+                            variant="outlined"
+                            size="small"
+                            onClick={() => initializelUploadDialog(booking)}
+                          >
+                            Upload file
                           </Button>
                         </Tooltip>
                       )}
@@ -377,7 +460,7 @@ const BookingListTableEngineer = (props) => {
         open={enableBulkActions}
         selected={selectedOrders}
       />
-      <BookingConfirmationModal handleAction={handleAssignAction} />
+      <BookingConfirmationModal handleAction={handleModalAction} />
     </>
   );
 };

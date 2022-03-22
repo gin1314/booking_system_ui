@@ -76,6 +76,11 @@ const engrSections = [
         path: '/booking-list?my-bookings=true',
         icon: <ReceiptIcon fontSize="small" />
       },
+      {
+        title: 'Lot Survey',
+        path: '/booking-list?lot-survey=true',
+        icon: <ReceiptIcon fontSize="small" />
+      },
     ]
   }
 ];

@@ -26,7 +26,7 @@ import DashboardLayout from 'src/components/dashboard/DashboardLayout';
 import _ from 'lodash';
 import BookingListTableAdmin from 'src/components/booking/BookingListTableAdmin';
 
-const BookingTable = ({ role, isOnMyBooking = false, ...others }) => {
+const BookingTable = ({ role, ...others }) => {
   if (role === 'engineer') {
     return <BookingListTableEngineer {...others} />;
   }
@@ -39,7 +39,7 @@ const BookingTable = ({ role, isOnMyBooking = false, ...others }) => {
   }
 };
 
-const BookingList = ({ bookings, user, isOnMyBooking }) => {
+const BookingList = ({ bookings, user, isOnMyBooking, isOnLotSurvey }) => {
   const isMountedRef = useIsMountedRef();
   const { settings } = useSettings();
   const [orders, setOrders] = useState([]);
@@ -152,6 +152,7 @@ const BookingList = ({ bookings, user, isOnMyBooking }) => {
             <BookingTable
               role={user.user.role}
               isOnMyBooking={isOnMyBooking}
+              isOnLotSurvey={isOnLotSurvey}
               orders={orders}
               bookings={bookings}
               user={user}
@@ -179,6 +180,7 @@ export const getServerSideProps = async ({ req, query }) => {
     include: 'user'
   };
   let isOnMyBooking = false;
+  let isOnLotSurvey = false;
   try {
     const apiRespMe = await fetch(`${process.env.apiBaseURLLocal}/auth/me`, {
       method: 'GET',
@@ -193,8 +195,16 @@ export const getServerSideProps = async ({ req, query }) => {
 
     if (_.get(query, 'my-bookings')) {
       bookingQuery['filter[user_id]'] = user.user.id;
+      bookingQuery['filter[status]'] = 'assigned';
       isOnMyBooking = true;
     }
+
+    if (_.get(query, 'lot-survey')) {
+      bookingQuery['filter[user_id]'] = user.user.id;
+      bookingQuery['filter[status]'] = 'completed,cancelled';
+      isOnLotSurvey = true;
+    }
+
     const allQuery = new URLSearchParams(bookingQuery).toString();
 
     const apiResp = await fetch(
@@ -227,7 +237,8 @@ export const getServerSideProps = async ({ req, query }) => {
     props: {
       bookings,
       user,
-      isOnMyBooking
+      isOnMyBooking,
+      isOnLotSurvey
     }
   };
 };
