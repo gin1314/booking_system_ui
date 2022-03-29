@@ -74,6 +74,10 @@ const putUpdateUser = (userId, params = {}) => {
   return iAxios.put(`/user/${userId}`, params);
 };
 
+const deleteUser = (userId, params = {}) => {
+  return iAxios.delete(`/user/${userId}`, params);
+};
+
 const getAllUsersFiltered = (page = 1, perPage = 5, params = {}) => {
   const defaultParams = {
     sort: '-id',
@@ -98,6 +102,7 @@ export {
   getAllBookingsFiltered,
   getAllUsers,
   putUpdateUser,
+  deleteUser,
   getAllUsersFiltered,
   postCreateUser
 };

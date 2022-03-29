@@ -31,21 +31,17 @@ import {
 import { useSnackbar } from 'notistack';
 import _ from 'lodash';
 import SearchIcon from 'src/icons/Search';
-import {
-  closeModal,
-  openModal,
-  setModalLabels,
-  closeAssignToEngrModal,
-  openAssignToEngrModal
-} from 'src/slices/booking';
+import { closeModal, openModal, setModalLabels } from 'src/slices/user';
 import { useDispatch, useSelector } from 'src/store';
 import {
   postAssignBooking,
   getAllBookingsFiltered,
-  getAllUsersFiltered
+  getAllUsersFiltered,
+  deleteUser
 } from 'src/api';
 import NProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
+import ConfirmUserDeleteModal from './dialogs/ConfirmUserDeleteModal';
 
 const severityMap = {
   completed: 'success',
@@ -162,9 +158,7 @@ const UserListTable = (props) => {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('id');
   const [sortDir, setSortDir] = useState('-');
-  const { booking, forType, assignedUserId } = useSelector(
-    (state) => state.booking
-  );
+  const { user: userState } = useSelector((state) => state.user);
   const [searchByValue, setSearchByValue] = useState('filter[name]');
 
   const [page, setPage] = useState(0);
@@ -286,16 +280,32 @@ const UserListTable = (props) => {
     })();
   };
 
-  const initiaizelAssignDialog = async (booking) => {
-    dispatch(openAssignToEngrModal({ booking, forType: 'assign' }));
+  const initializeDeleteDialog = async (user) => {
+    dispatch(openModal({ user }));
     dispatch(
       setModalLabels({
-        title: 'Assign Confirmation',
+        title: 'Delete User',
         closeLabel: 'Close',
-        agreeLabel: 'Assign',
-        body: 'Assign this booking to an Engineer'
+        agreeLabel: 'Delete',
+        body: 'Are you sure you want to delete this user?'
       })
     );
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser(userState.id);
+      enqueueSnackbar('User successfully deleted!', {
+        variant: 'success'
+      });
+      dispatch(closeModal());
+      window.location = '/users';
+    } catch (error) {
+      enqueueSnackbar('Something went wrong', {
+        variant: 'error'
+      });
+      dispatch(closeModal());
+    }
   };
 
   return (
@@ -443,6 +453,16 @@ const UserListTable = (props) => {
                           Edit
                         </Button>
                       </NextLink>
+                      <Button
+                        variant="text"
+                        color="warning"
+                        size="small"
+                        onClick={() => {
+                          initializeDeleteDialog(user);
+                        }}
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );
@@ -460,6 +480,7 @@ const UserListTable = (props) => {
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
+        <ConfirmUserDeleteModal handleAction={handleDeleteUser} />
       </Card>
     </>
   );

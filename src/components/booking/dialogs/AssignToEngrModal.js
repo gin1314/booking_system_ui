@@ -70,7 +70,6 @@ const AssignToEngrModal = (props) => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       PaperProps={{ sx: { width: "30%" } }}
-
     >
       <DialogTitle id="alert-dialog-title">{modalParams.title}</DialogTitle>
       <DialogContent>
