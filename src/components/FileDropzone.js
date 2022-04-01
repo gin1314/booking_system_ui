@@ -12,7 +12,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { Duplicate as DuplicateIcon } from 'src/icons/duplicate';
+import { Duplicate as DuplicateIcon } from 'src/icons/Duplicate';
 import { X as XIcon } from 'src/icons/x-svg';
 import bytesToSize from 'src/utils/bytesToSize';
 

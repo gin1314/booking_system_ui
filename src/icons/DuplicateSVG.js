@@ -1,6 +1,6 @@
 import SvgIcon from "@mui/material/SvgIcon";
 
-function Duplicate(props) {
+function DuplicateSVG(props) {
   return (
     <SvgIcon>
       <svg
@@ -15,4 +15,4 @@ function Duplicate(props) {
   );
 }
 
-export default Duplicate;
+export default DuplicateSVG;
