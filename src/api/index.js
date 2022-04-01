@@ -92,6 +92,15 @@ const postCreateUser = (params = {}) => {
   return iAxios.post('/user', params);
 };
 
+const postUploadFileBooking = (booking, params = {}, config = {}) => {
+  return iAxios.post(`/files/booking/${booking}/upload`, params, {
+    headers: {
+      Accept: '*/*'
+    },
+    ...config
+  });
+};
+
 export {
   getAllBookings,
   postCreateBooking,
@@ -104,6 +113,7 @@ export {
   putUpdateUser,
   deleteUser,
   getAllUsersFiltered,
-  postCreateUser
+  postCreateUser,
+  postUploadFileBooking
 };
 export default iAxios;

@@ -2,7 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isModalOpen: false,
+  isUploadModalOpen: false,
   isAssingToEngrModalOpen: false,
+  bookFilesCloseDialog: false,
+  isBookFilesOpen: false,
   selectedBookingId: null,
   booking: {},
   forType: '',
@@ -24,6 +27,15 @@ const slice = createSlice({
       state.booking = action.payload.booking;
       state.forType = action.payload.forType;
     },
+    openUploadModal(state, action) {
+      state.isUploadModalOpen = true;
+      state.booking = action.payload.booking;
+    },
+    closeUploadModal(state, action) {
+      state.isUploadModalOpen = false;
+      state.selectedBookingId = null;
+    },
+
     openAssignToEngrModal(state, action) {
       state.isAssingToEngrModalOpen = true;
       state.booking = action.payload.booking;
@@ -46,6 +58,14 @@ const slice = createSlice({
       };
       //   state.selectedBookingId = null;
     },
+    openBookFileModal(state, action) {
+      state.isBookFilesOpen = true;
+      state.booking = action.payload.booking;
+    },
+    closeBookFileModal(state, action) {
+      state.isBookFilesOpen = false;
+      state.selectedBookingId = null;
+    },
     setAssignedUser(state, action) {
       state.assignedUserId = action.payload.assignedUserId;
     }
@@ -64,6 +84,16 @@ export const closeModal = () => (dispatch) => {
   dispatch(slice.actions.closeModal());
 };
 
+export const openUploadModal =
+  ({ booking }) =>
+  (dispatch) => {
+    dispatch(slice.actions.openUploadModal({ booking }));
+  };
+
+export const closeUploadModal = () => (dispatch) => {
+  dispatch(slice.actions.closeUploadModal());
+};
+
 export const openAssignToEngrModal =
   ({ booking, forType }) =>
   (dispatch) => {
@@ -72,6 +102,16 @@ export const openAssignToEngrModal =
 
 export const closeAssignToEngrModal = () => (dispatch) => {
   dispatch(slice.actions.closeAssignToEngrModal());
+};
+
+export const openBookFileModal =
+  ({ booking }) =>
+  (dispatch) => {
+    dispatch(slice.actions.openBookFileModal({ booking }));
+  };
+
+export const closeBookFileModal = () => (dispatch) => {
+  dispatch(slice.actions.closeBookFileModal());
 };
 
 export const setModalLabels =

@@ -6,6 +6,7 @@ import router from 'next/router';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import {
   Autocomplete,
   Box,
@@ -37,17 +38,26 @@ import PencilAltIcon from '../../icons/PencilAlt';
 import MoreMenu from '../MoreMenu';
 import Scrollbar from '../Scrollbar';
 import OrderListBulkActions from './OrderListBulkActions';
-import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
+import {
+  closeModal,
+  openModal,
+  setModalLabels,
+  openUploadModal,
+  openBookFileModal
+} from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
 import {
   postConfirmBooking,
   postCompleteBooking,
-  postCancelBooking
+  postCancelBooking,
+  getAllBookings
 } from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
+import UploadLotSurveyModal from './dialogs/UploadLotSurveyModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
+import BookingFileDialog from './dialogs/BookingFileDialog';
 
 const severityMap = {
   completed: 'success',
@@ -145,7 +155,8 @@ const sortDirectionOptions = [
  * @returns null
  */
 const BookingListTableEngineer = (props) => {
-  const { orders, bookings, user, isOnLotSurvey, isOnMyBooking, ...other } = props;
+  const { orders, bookings, user, isOnLotSurvey, isOnMyBooking, ...other } =
+    props;
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -217,7 +228,7 @@ const BookingListTableEngineer = (props) => {
   };
 
   const initializelUploadDialog = async (booking) => {
-    dispatch(openModal({ booking, forType: 'upload' }));
+    dispatch(openUploadModal({ booking }));
     dispatch(
       setModalLabels({
         title: 'Upload Survey Lot file',
@@ -238,6 +249,18 @@ const BookingListTableEngineer = (props) => {
         body: 'Are you sure you want to cancel this booking?'
       })
     );
+  };
+
+  const openDialogFiles = async (booking) => {
+    let params = {
+      'filter[id]': booking.id,
+      include: 'files'
+    };
+    const response = await getAllBookings(params);
+    const bookingModel = _.get(response, 'data.data[0]', null);
+    if (bookingModel) {
+      dispatch(openBookFileModal({ booking: bookingModel }));
+    }
   };
 
   //@TODO create separate modal for uploading files
@@ -426,6 +449,14 @@ const BookingListTableEngineer = (props) => {
                           </Button>
                         </Tooltip>
                       )}
+                      <Button
+                        sx={{ ml: 1 }}
+                        variant="outlined"
+                        size="small"
+                        onClick={() => openDialogFiles(booking)}
+                      >
+                        open files
+                      </Button>
                       {/* <NextLink href="/" passHref>
                         <Button variant="outlined">Assign</Button>
                       </NextLink> */}
@@ -461,6 +492,8 @@ const BookingListTableEngineer = (props) => {
         selected={selectedOrders}
       />
       <BookingConfirmationModal handleAction={handleModalAction} />
+      <UploadLotSurveyModal handleAction={handleModalAction} />
+      <BookingFileDialog />
     </>
   );
 };
