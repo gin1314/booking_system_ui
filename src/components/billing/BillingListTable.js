@@ -37,14 +37,24 @@ import PencilAltIcon from '../../icons/PencilAlt';
 // Label
 import MoreMenu from '../MoreMenu';
 import Scrollbar from '../Scrollbar';
-import { closeModal, openModal, setModalLabels } from 'src/slices/booking';
+import {
+  closeModal,
+  openModal,
+  setModalLabels,
+  openBookFileModal
+} from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
-import { postConfirmBooking, postCompleteBooking } from 'src/api';
+import {
+  postConfirmBooking,
+  postCompleteBooking,
+  getAllBookings
+} from 'src/api';
 // import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
 import BookingConfirmationModal from '../booking/dialogs/BookingConfirmationModal';
+import BookingFileDialog from '../booking/dialogs/BookingFileDialog';
 
 const severityMap = {
   completed: 'success',
@@ -234,6 +244,18 @@ const BillingListTable = (props) => {
     }
   };
 
+  const openDialogFiles = async (booking) => {
+    let params = {
+      'filter[id]': booking.id,
+      include: 'files'
+    };
+    const response = await getAllBookings(params);
+    const bookingModel = _.get(response, 'data.data[0]', null);
+    if (bookingModel) {
+      dispatch(openBookFileModal({ booking: bookingModel }));
+    }
+  };
+
   const paginatedOrders = applyPagination(orders, page, limit);
   const enableBulkActions = selectedOrders.length > 0;
   const selectedSomeOrders =
@@ -317,9 +339,7 @@ const BillingListTable = (props) => {
                         {booking.phone_no}
                       </Typography>
                     </TableCell>
-                    <TableCell>
-                      {_.get(booking, 'user.name')}
-                    </TableCell>
+                    <TableCell>{_.get(booking, 'user.name')}</TableCell>
                     <TableCell>{booking.survey_type}</TableCell>
                     <TableCell>
                       {joinAddress([
@@ -337,20 +357,28 @@ const BillingListTable = (props) => {
                         {booking.status}
                       </SeverityPill>
                     </TableCell>
-                    <TableCell>
-
-                    </TableCell>
+                    <TableCell></TableCell>
                     <TableCell align="right">
                       {booking.status === 'completed' && (
-                        <Tooltip title="Click this to send invoice to the client">
+                        <>
+                          <Tooltip title="Click this to send invoice to the client">
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={() => initiaizelConfirmnDialog(booking)}
+                            >
+                              Make an Invoice
+                            </Button>
+                          </Tooltip>
                           <Button
+                            sx={{ ml: 1 }}
                             variant="outlined"
                             size="small"
-                            onClick={() => initiaizelConfirmnDialog(booking)}
+                            onClick={() => openDialogFiles(booking)}
                           >
-                            Make an Invoice
+                            View Lot Survey
                           </Button>
-                        </Tooltip>
+                        </>
                       )}
                       {booking.status === 'confirmed' && (
                         <Tooltip title="Click this if you have completed the survey">
@@ -395,6 +423,7 @@ const BillingListTable = (props) => {
       </Card>
 
       <BookingConfirmationModal handleAction={handleAssignAction} />
+      <BookingFileDialog />
     </>
   );
 };

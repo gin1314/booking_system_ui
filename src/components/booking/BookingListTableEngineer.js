@@ -455,7 +455,7 @@ const BookingListTableEngineer = (props) => {
                         size="small"
                         onClick={() => openDialogFiles(booking)}
                       >
-                        open files
+                         View Lot Survey
                       </Button>
                       {/* <NextLink href="/" passHref>
                         <Button variant="outlined">Assign</Button>
