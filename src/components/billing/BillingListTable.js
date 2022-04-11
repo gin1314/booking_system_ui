@@ -368,7 +368,7 @@ const BillingListTable = (props) => {
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
                       <SeverityPill
-                        color={severityMap[booking.status] || 'warning'}
+                        color={severityMap[_.get(booking, 'invoice.status')] || 'warning'}
                       >
                         {_.get(booking, 'invoice.status')}
                       </SeverityPill>
