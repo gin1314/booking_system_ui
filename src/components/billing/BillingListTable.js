@@ -59,6 +59,7 @@ import nProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
 // import BookingConfirmationModal from '../booking/dialogs/BookingConfirmationModal';
 import CreateInvoiceModal from '../billing/dialogs/CreateInvoiceModal';
+import BookingFileDialog from '../booking/dialogs/BookingFileDialog';
 
 const severityMap = {
   paid: 'success',
@@ -449,7 +450,7 @@ const BillingListTable = (props) => {
       </Card>
 
       <CreateInvoiceModal handleAction={handleMakeInvoiceAction} />
-      {/* <BookingFileDialog /> */}
+      <BookingFileDialog />
     </>
   );
 };
