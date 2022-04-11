@@ -3,7 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isModalOpen: false,
   isUploadModalOpen: false,
+  isMakeInvoiceModalOpen: false,
   isAssingToEngrModalOpen: false,
+  invoiceAmount: null,
   bookFilesCloseDialog: false,
   isBookFilesOpen: false,
   selectedBookingId: null,
@@ -68,6 +70,18 @@ const slice = createSlice({
     },
     setAssignedUser(state, action) {
       state.assignedUserId = action.payload.assignedUserId;
+    },
+    setInvoiceAmount(state, action) {
+      state.invoiceAmount = action.payload.invoiceAmount;
+    },
+    openMakeInvoiceModal(state, action) {
+      state.isMakeInvoiceModalOpen = true;
+      state.booking = action.payload.booking;
+      state.forType = action.payload.forType;
+    },
+    closeMakeInvoiceModal(state, action) {
+      state.isMakeInvoiceModalOpen = false;
+      state.selectedBookingId = null;
     }
   }
 });
@@ -114,6 +128,16 @@ export const closeBookFileModal = () => (dispatch) => {
   dispatch(slice.actions.closeBookFileModal());
 };
 
+export const openMakeInvoiceModal =
+  ({ booking }) =>
+  (dispatch) => {
+    dispatch(slice.actions.openMakeInvoiceModal({ booking }));
+  };
+
+export const closeMakeInvoiceModal = () => (dispatch) => {
+  dispatch(slice.actions.closeMakeInvoiceModal());
+};
+
 export const setModalLabels =
   ({ title, closeLabel = 'Close', agreeLabel = 'Ok', body }) =>
   (dispatch) => {
@@ -131,5 +155,11 @@ export const setAssignedUser =
   ({ assignedUserId }) =>
   (dispatch) => {
     dispatch(slice.actions.setAssignedUser({ assignedUserId }));
+  };
+
+export const setInvoiceAmount =
+  ({ invoiceAmount }) =>
+  (dispatch) => {
+    dispatch(slice.actions.setInvoiceAmount({ invoiceAmount }));
   };
 export default slice;

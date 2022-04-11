@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+
 import {
   Autocomplete,
   Box,
@@ -40,6 +41,8 @@ import Scrollbar from '../Scrollbar';
 import {
   closeModal,
   openModal,
+  openMakeInvoiceModal,
+  closeMakeInvoiceModal,
   setModalLabels,
   openBookFileModal
 } from 'src/slices/booking';
@@ -47,20 +50,20 @@ import { useDispatch, useSelector } from 'src/store';
 import {
   postConfirmBooking,
   postCompleteBooking,
-  getAllBookings
+  getAllBookings,
+  postCreateInvoice
 } from 'src/api';
 // import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import nProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
-import BookingConfirmationModal from '../booking/dialogs/BookingConfirmationModal';
-import BookingFileDialog from '../booking/dialogs/BookingFileDialog';
+// import BookingConfirmationModal from '../booking/dialogs/BookingConfirmationModal';
+import CreateInvoiceModal from '../billing/dialogs/CreateInvoiceModal';
 
 const severityMap = {
-  completed: 'success',
+  paid: 'success',
   pending: 'info',
-  cancelled: 'warning',
-  confirmed: 'primary'
+  failed: 'error'
 };
 
 const applyPagination = (orders, page, limit) =>
@@ -156,7 +159,9 @@ const BillingListTable = (props) => {
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const { booking, forType } = useSelector((state) => state.booking);
+  const { booking, forType, invoiceAmount } = useSelector(
+    (state) => state.booking
+  );
 
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
@@ -187,14 +192,14 @@ const BillingListTable = (props) => {
     setLimit(parseInt(event.target.value, 10));
   };
 
-  const initiaizelConfirmnDialog = async (booking) => {
-    dispatch(openModal({ booking, forType: 'confirm' }));
+  const initializeMakeInvoiceDialog = async (booking) => {
+    dispatch(openMakeInvoiceModal({ booking }));
     dispatch(
       setModalLabels({
-        title: 'Booking Confirmation',
+        title: 'Send and Invoice to the client',
         closeLabel: 'Close',
         agreeLabel: 'Confirm',
-        body: 'Are you sure you want to confirm this booking?'
+        body: 'Are you sure you want to send this invoice?'
       })
     );
   };
@@ -211,36 +216,45 @@ const BillingListTable = (props) => {
     );
   };
 
-  const handleAssignAction = async () => {
+  const handleMakeInvoiceAction = async () => {
     try {
-      switch (forType) {
-        case 'confirm':
-          await postConfirmBooking(booking.id);
-          enqueueSnackbar(
-            'Booking successfully confirmed, an email will be sent to the client!',
-            {
-              variant: 'success'
-            }
-          );
-          dispatch(closeModal());
-          router.push('/booking-list?my-bookings=true');
-          break;
-        case 'completed':
-          await postCompleteBooking(booking.id);
-          enqueueSnackbar('Booking successfully completed', {
-            variant: 'success'
-          });
-          dispatch(closeModal());
-          router.push('/booking-list?my-bookings=true');
-          break;
-        default:
-          break;
-      }
+      // switch (forType) {
+      //   case 'confirm':
+      //     await postConfirmBooking(booking.id);
+      //     enqueueSnackbar(
+      //       'Booking successfully confirmed, an email will be sent to the client!',
+      //       {
+      //         variant: 'success'
+      //       }
+      //     );
+      //     dispatch(closeModal());
+      //     router.push('/booking-list?my-bookings=true');
+      //     break;
+      //   case 'completed':
+      //     await postCompleteBooking(booking.id);
+      //     enqueueSnackbar('Booking successfully completed', {
+      //       variant: 'success'
+      //     });
+      //     dispatch(closeModal());
+      //     router.push('/booking-list?my-bookings=true');
+      //     break;
+      //   default:
+      //     break;
+      // }
+      await postCreateInvoice(booking.id, { amount: invoiceAmount });
+      enqueueSnackbar(
+        'Invoice has been sent to the client!',
+        {
+          variant: 'success'
+        }
+      );
+      dispatch(closeMakeInvoiceModal());
+      router.push('/billing');
     } catch (error) {
       enqueueSnackbar('Something went wrong', {
         variant: 'error'
       });
-      dispatch(closeModal());
+      dispatch(closeMakeInvoiceModal());
     }
   };
 
@@ -289,7 +303,9 @@ const BillingListTable = (props) => {
                     Total
                   </TableCell> */}
                 {/* <TableCell>Status</TableCell> */}
-                <TableCell>Booking Status</TableCell>
+                <TableCell>Payment Status</TableCell>
+                <TableCell>GCash Link</TableCell>
+                <TableCell>GCash Reference No</TableCell>
                 <TableCell>Amount</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
@@ -354,10 +370,18 @@ const BillingListTable = (props) => {
                       <SeverityPill
                         color={severityMap[booking.status] || 'warning'}
                       >
-                        {booking.status}
+                        {_.get(booking, 'invoice.status')}
                       </SeverityPill>
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                      <Link href={_.get(booking, 'invoice.gcash_checkout_url')}>Click here</Link>
+                    </TableCell>
+                    <TableCell>
+                      {_.get(booking, 'invoice.reference_id')}
+                    </TableCell>
+                    <TableCell>
+                      PHP {numeral(_.get(booking, 'invoice.amount')).format('0,0.00')}
+                    </TableCell>
                     <TableCell align="right">
                       {booking.status === 'completed' && (
                         <>
@@ -365,7 +389,9 @@ const BillingListTable = (props) => {
                             <Button
                               variant="outlined"
                               size="small"
-                              onClick={() => initiaizelConfirmnDialog(booking)}
+                              onClick={() =>
+                                initializeMakeInvoiceDialog(booking)
+                              }
                             >
                               Make an Invoice
                             </Button>
@@ -422,8 +448,8 @@ const BillingListTable = (props) => {
         />
       </Card>
 
-      <BookingConfirmationModal handleAction={handleAssignAction} />
-      <BookingFileDialog />
+      <CreateInvoiceModal handleAction={handleMakeInvoiceAction} />
+      {/* <BookingFileDialog /> */}
     </>
   );
 };

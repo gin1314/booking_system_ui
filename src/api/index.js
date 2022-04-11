@@ -101,6 +101,10 @@ const postUploadFileBooking = (booking, params = {}, config = {}) => {
   });
 };
 
+const postCreateInvoice = (bookingId, params = {}) => {
+  return iAxios.post(`/invoices/gcash/create/${bookingId}`, params);
+};
+
 export {
   getAllBookings,
   postCreateBooking,
@@ -114,6 +118,7 @@ export {
   deleteUser,
   getAllUsersFiltered,
   postCreateUser,
-  postUploadFileBooking
+  postUploadFileBooking,
+  postCreateInvoice
 };
 export default iAxios;
