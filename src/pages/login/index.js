@@ -55,33 +55,6 @@ const Login = () => {
           >
             {/* <RouterLink to="/"></RouterLink> */}
           </Box>
-          <Box sx={{ mb: 3 }}>
-            <Card>
-              <CardContent
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  p: 4
-                }}
-              >
-                <Box sx={{ m: 2 }}>
-                  <Button
-                    color="primary"
-                    // disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    onClick={() => router.push('/booking')}
-                  >
-                    <Typography variant='h6'>
-                      {'Book a land survey appointment with us NOW!'}
-                    </Typography>
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
-          </Box>
           <Card>
             <CardContent
               sx={{

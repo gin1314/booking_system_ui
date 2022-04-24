@@ -54,7 +54,7 @@ export default function HeaderNavBar() {
   return (
     <Navigation>
       <ul role="menubar" /* onKeyDown={handleLeftRightArrow} */>
-        <li role="none">
+        {/* <li role="none">
           <Link role="menuitem" href={'/pricing'}>
             Pricing
           </Link>
@@ -63,7 +63,7 @@ export default function HeaderNavBar() {
           <Link role="menuitem" href={'/about-us'}>
             About us
           </Link>
-        </li>
+        </li> */}
         <li role="none">
           <Link role="menuitem" href={'/login'}>
             Admin/Engineer Login
