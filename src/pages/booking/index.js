@@ -828,6 +828,40 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
                     </Grid>
                   </Grid>
                 </CardContent>
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: 'background.paper',
+                  minHeight: '100%',
+                  py: 2
+                }}
+              >
+                <CardHeader title="Data Privacy Agreement" />
+                <Divider />
+                <CardContent>
+                  <Box>
+                    I have read and understood the above statements that inform
+                    me of the purpose for the collection of my personal data and
+                    my rights as a data subject. By clicking the "agree" button
+                    herein as an expressed consent and approval for the
+                    collection and processing of my personal data in accordance
+                    with the Intellectual Property Code and Data Privacy Law.
+                  </Box>
+                  <div>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={values.data_privacy_agree}
+                          color="primary"
+                          name="deed_of_donation"
+                          onChange={handleChange}
+                          value={values.data_privacy_agree}
+                        />
+                      }
+                      label="Agree"
+                    />
+                  </div>
+                </CardContent>
                 <Divider
                   sx={{
                     mt: 2,
