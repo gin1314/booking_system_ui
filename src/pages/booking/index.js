@@ -181,6 +181,7 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
             appointment_notes: '',
             time_slot_id: '',
             email: '',
+            data_privacy_agree: false,
             requirements: {
               deed_of_sale: Boolean(false),
               deed_of_donation: Boolean(false),
@@ -204,7 +205,8 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
             //   'The land location is required'
             // ),
             survey_type: Yup.string().required('The survey type is required'),
-            time_slot_id: Yup.string().required('The time slot is required')
+            time_slot_id: Yup.string().required('The time slot is required'),
+            data_privacy_agree: Yup.bool().required('Please click to agree on Data Privacy')
           })}
           onSubmit={async (
             values,
