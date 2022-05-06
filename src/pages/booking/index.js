@@ -206,7 +206,10 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
             // ),
             survey_type: Yup.string().required('The survey type is required'),
             time_slot_id: Yup.string().required('The time slot is required'),
-            data_privacy_agree: Yup.bool().required('Please click to agree on Data Privacy')
+            data_privacy_agree: Yup.boolean().oneOf(
+              [true],
+              'Please click to agree on Data Privacy'
+            )
           })}
           onSubmit={async (
             values,
@@ -855,13 +858,16 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
                         <Checkbox
                           checked={values.data_privacy_agree}
                           color="primary"
-                          name="deed_of_donation"
+                          name="data_privacy_agree"
                           onChange={handleChange}
                           value={values.data_privacy_agree}
                         />
                       }
                       label="Agree"
                     />
+                    <FormHelperText error>
+                      {touched.data_privacy_agree && errors.data_privacy_agree}
+                    </FormHelperText>
                   </div>
                 </CardContent>
                 <Divider
