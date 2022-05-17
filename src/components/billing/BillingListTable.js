@@ -51,7 +51,9 @@ import {
   postConfirmBooking,
   postCompleteBooking,
   getAllBookings,
-  postCreateInvoice
+  postCreateInvoice,
+  getSendSurveyProcessing,
+  getSendSurveyReceiving
 } from 'src/api';
 // import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
@@ -243,12 +245,9 @@ const BillingListTable = (props) => {
       //     break;
       // }
       await postCreateInvoice(booking.id, { amount: invoiceAmount });
-      enqueueSnackbar(
-        'Invoice has been sent to the client!',
-        {
-          variant: 'success'
-        }
-      );
+      enqueueSnackbar('Invoice has been sent to the client!', {
+        variant: 'success'
+      });
       dispatch(closeMakeInvoiceModal());
       router.push('/billing');
     } catch (error) {
@@ -256,6 +255,34 @@ const BillingListTable = (props) => {
         variant: 'error'
       });
       dispatch(closeMakeInvoiceModal());
+    }
+  };
+
+  const handleSurveyProcessing = async (booking) => {
+    try {
+      await getSendSurveyProcessing(booking.id);
+      enqueueSnackbar('An email has been sent to the client!', {
+        variant: 'success'
+      });
+      dispatch(closeMakeInvoiceModal());
+    } catch (error) {
+      enqueueSnackbar('Something went wrong', {
+        variant: 'error'
+      });
+    }
+  };
+
+  const handleSurveyReceiving = async (booking) => {
+    try {
+      await getSendSurveyReceiving(booking.id);
+      enqueueSnackbar('An email has been sent to the client!', {
+        variant: 'success'
+      });
+      dispatch(closeMakeInvoiceModal());
+    } catch (error) {
+      enqueueSnackbar('Something went wrong', {
+        variant: 'error'
+      });
     }
   };
 
@@ -369,19 +396,27 @@ const BillingListTable = (props) => {
                     {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
                     <TableCell>
                       <SeverityPill
-                        color={severityMap[_.get(booking, 'invoice.status')] || 'warning'}
+                        color={
+                          severityMap[_.get(booking, 'invoice.status')] ||
+                          'warning'
+                        }
                       >
                         {_.get(booking, 'invoice.status')}
                       </SeverityPill>
                     </TableCell>
                     <TableCell>
-                      <Link href={_.get(booking, 'invoice.gcash_checkout_url')}>Click here</Link>
+                      <Link href={_.get(booking, 'invoice.gcash_checkout_url')}>
+                        Click here
+                      </Link>
                     </TableCell>
                     <TableCell>
                       {_.get(booking, 'invoice.reference_id')}
                     </TableCell>
                     <TableCell>
-                      PHP {numeral(_.get(booking, 'invoice.amount')).format('0,0.00')}
+                      PHP{' '}
+                      {numeral(_.get(booking, 'invoice.amount')).format(
+                        '0,0.00'
+                      )}
                     </TableCell>
                     <TableCell align="right">
                       {booking.status === 'completed' && (
@@ -417,6 +452,24 @@ const BillingListTable = (props) => {
                             Complete Booking
                           </Button>
                         </Tooltip>
+                      )}
+                      {_.get(booking, 'invoice.status') == 'paid' && (
+                        <>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => handleSurveyProcessing(booking)}
+                          >
+                            Process
+                          </Button>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => handleSurveyReceiving(booking)}
+                          >
+                            Receiving
+                          </Button>
+                        </>
                       )}
                       {/* <NextLink href="/" passHref>
                         <Button variant="outlined">Assign</Button>

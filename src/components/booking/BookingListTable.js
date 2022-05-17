@@ -34,7 +34,13 @@ import { useSnackbar } from 'notistack';
 import _ from 'lodash';
 import SearchIcon from 'src/icons/Search';
 import OrderListBulkActions from './OrderListBulkActions';
-import { closeModal, openModal, setModalLabels, closeAssignToEngrModal, openAssignToEngrModal } from 'src/slices/booking';
+import {
+  closeModal,
+  openModal,
+  setModalLabels,
+  closeAssignToEngrModal,
+  openAssignToEngrModal
+} from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
 import { postAssignBooking, getAllBookingsFiltered } from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
@@ -150,7 +156,9 @@ const BookingListTable = (props) => {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('id');
   const [sortDir, setSortDir] = useState('-');
-  const { booking, forType, assignedUserId } = useSelector((state) => state.booking);
+  const { booking, forType, assignedUserId } = useSelector(
+    (state) => state.booking
+  );
   const [searchByValue, setSearchByValue] = useState('filter[id]');
 
   const [page, setPage] = useState(0);
@@ -319,7 +327,11 @@ const BookingListTable = (props) => {
       );
     }
 
-    if (booking.user_id && booking.user_id !== user.user.id && booking.status !== 'completed') {
+    if (
+      booking.user_id &&
+      booking.user_id !== user.user.id &&
+      booking.status !== 'completed'
+    ) {
       return (
         <Button variant="text" size="small">
           Assigned
@@ -520,6 +532,12 @@ const BookingListTable = (props) => {
                         </Button>
                       )} */}
                       <ActionButtons booking={booking} />
+                      <NextLink href={`/booking/details/${booking.id}`} passHref>
+                        <Button variant="text" size="small">
+                          Details
+                        </Button>
+                      </NextLink>
+
                       {/* <NextLink href="/" passHref>
                         <Button variant="outlined">Assign</Button>
                       </NextLink> */}

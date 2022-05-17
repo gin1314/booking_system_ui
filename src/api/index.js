@@ -105,6 +105,14 @@ const postCreateInvoice = (bookingId, params = {}) => {
   return iAxios.post(`/invoices/gcash/create/${bookingId}`, params);
 };
 
+const getSendSurveyProcessing = (bookingId) => {
+  return iAxios.get(`/user/send-email/survey/processing/${bookingId}`);
+};
+
+const getSendSurveyReceiving = (bookingId) => {
+  return iAxios.get(`/user/send-email/survey/receiving/${bookingId}`);
+};
+
 export {
   getAllBookings,
   postCreateBooking,
@@ -119,6 +127,8 @@ export {
   getAllUsersFiltered,
   postCreateUser,
   postUploadFileBooking,
-  postCreateInvoice
+  postCreateInvoice,
+  getSendSurveyProcessing,
+  getSendSurveyReceiving
 };
 export default iAxios;

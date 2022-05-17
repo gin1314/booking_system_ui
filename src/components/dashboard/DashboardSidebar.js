@@ -33,6 +33,11 @@ const adminSections = [
         path: '/billing',
         icon: <ReceiptIcon fontSize="small" />
       },
+      {
+        title: 'Completed Bookings',
+        path: '/completed-booking',
+        icon: <ReceiptIcon fontSize="small" />
+      },
       // {
       //   title: 'Billing',
       //   path: '/dashboard/finance',
