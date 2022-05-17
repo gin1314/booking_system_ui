@@ -419,7 +419,7 @@ const BillingListTable = (props) => {
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      {booking.status === 'completed' && (
+                      {(booking.status === 'completed' && _.get(booking, 'invoice.status') !== 'paid')  && (
                         <>
                           <Tooltip title="Click this to send invoice to the client">
                             <Button
