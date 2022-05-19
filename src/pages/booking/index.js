@@ -276,20 +276,26 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
             try {
               // console.log(values, 'values');
               const response = await postCreateBooking(values);
-              await wait(5000);
+              await wait(2000);
               if(files.length > 0) {
-                uploadBookingDocuments(response.data.data, () => {
+                uploadBookingDocuments(response.data.data, async () => {
                   setStatus({ success: true });
                   setSuccessBookingIdUrl(
                     `/booking/details/${response.data.data.id}`
                   );
                   setOpenBookSuccessDialog(true);
-                  wait(500).then(() => {
-                    router.push(`/booking/details/${response.data.data.id}`);
-                  })
+                  await wait(500);
+                  router.push(`/booking/details/${response.data.data.id}`);
                 });
+              } else {
+                setStatus({ success: true });
+                setSuccessBookingIdUrl(
+                  `/booking/details/${response.data.data.id}`
+                );
+                setOpenBookSuccessDialog(true);
+                await wait(500);
+                router.push(`/booking/details/${response.data.data.id}`);
               }
-
               // enqueueSnackbar('You have successfuly booked an appointment!', {
               //   variant: 'success'
               // });
