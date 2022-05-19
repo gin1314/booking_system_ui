@@ -66,7 +66,7 @@ const UploadLotSurveyModal = (props) => {
     //   return;
     // }
     files.forEach((file) => {
-      formData.append('file', file);
+      formData.append('file[]', file);
     });
 
     formData.append('type', uploadType);
