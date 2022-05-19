@@ -37,6 +37,7 @@ export const FileDropzone = (props) => {
     onRemoveAll,
     onUpload,
     preventDropOnDocument,
+    noUploadBtn,
     ...other
   } = props;
 
@@ -74,7 +75,8 @@ export const FileDropzone = (props) => {
             opacity: 0.5
           }
         }}
-        {...getRootProps()}>
+        {...getRootProps()}
+      >
         <input {...getInputProps()} />
         <Box
           sx={{
@@ -83,24 +85,16 @@ export const FileDropzone = (props) => {
             }
           }}
         >
-          <img
-            alt="Select file"
-            src="/static/undraw_add_file2_gvbb.svg"
-          />
+          <img alt="Select file" src="/static/undraw_add_file2_gvbb.svg" />
         </Box>
         <Box sx={{ p: 2 }}>
           <Typography variant="h6">
-            {`Select file${(maxFiles && maxFiles === 1) ? '' : 's'}`}
+            {`Select file${maxFiles && maxFiles === 1 ? '' : 's'}`}
           </Typography>
           <Box sx={{ mt: 2 }}>
             <Typography variant="body1">
-              {`Drop file${(maxFiles && maxFiles === 1) ? '' : 's'}`}
-              {' '}
-              <Link underline="always">
-                browse
-              </Link>
-              {' '}
-              thorough your machine
+              {`Drop file${maxFiles && maxFiles === 1 ? '' : 's'}`}{' '}
+              <Link underline="always">browse</Link> thorough your machine
             </Typography>
           </Box>
         </Box>
@@ -149,22 +143,20 @@ export const FileDropzone = (props) => {
               mt: 2
             }}
           >
-            <Button
-              onClick={onRemoveAll}
-              size="small"
-              type="button"
-            >
+            <Button onClick={onRemoveAll} size="small" type="button">
               Remove All
             </Button>
-            <Button
-              onClick={onUpload}
-              size="small"
-              sx={{ ml: 2 }}
-              type="button"
-              variant="contained"
-            >
-              Upload
-            </Button>
+            {!noUploadBtn && (
+              <Button
+                onClick={onUpload}
+                size="small"
+                sx={{ ml: 2 }}
+                type="button"
+                variant="contained"
+              >
+                Upload
+              </Button>
+            )}
           </Box>
         </Box>
       )}
@@ -194,9 +186,11 @@ FileDropzone.propTypes = {
   onRemove: PropTypes.func,
   onRemoveAll: PropTypes.func,
   onUpload: PropTypes.func,
-  preventDropOnDocument: PropTypes.bool
+  preventDropOnDocument: PropTypes.bool,
+  noUploadBtn: PropTypes.bool
 };
 
 FileDropzone.defaultProps = {
-  files: []
+  files: [],
+  noUploadBtn: false
 };

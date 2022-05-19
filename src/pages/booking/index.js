@@ -8,6 +8,7 @@ import wait from 'src/utils/wait';
 import router from 'next/router';
 import _ from 'lodash';
 import nProgress from 'nprogress';
+import { FileDropzone } from 'src/components/FileDropzone';
 import {
   Box,
   Button,
@@ -40,7 +41,7 @@ import {
   DialogTitle,
   AlertTitle
 } from '@mui/material';
-import { postCreateBooking } from 'src/api';
+import { postCreateBooking, postUploadFileBooking } from 'src/api';
 
 const moment = new MomentAdapter();
 
@@ -71,6 +72,9 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
   const [openBookSuccessDialog, setOpenBookSuccessDialog] = useState(false);
   const [alertDialogErrors, setAlertDialogError] = useState(false);
   const [successBookingIdUrl, setSuccessBookingIdUrl] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [uploadType, setUploadType] = useState('document');
+  const [uploadPercentage, setUploadPercentage] = useState(0);
 
   const handleCloseAlertDialog = () => {
     setOpenAlertDialog(false);
@@ -78,6 +82,60 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
 
   const handleCloseBookSuccess = () => {
     setOpenBookSuccessDialog(false);
+  };
+
+  const handleDrop = (newFiles) => {
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+  };
+
+  const handleRemove = (file) => {
+    setFiles((prevFiles) =>
+      prevFiles.filter((_file) => _file.path !== file.path)
+    );
+  };
+
+  const handleRemoveAll = () => {
+    setFiles([]);
+  };
+
+  const uploadBookingDocuments = (booking, uploadSuccessCb) => {
+    const formData = new FormData();
+    // if (!uploadType) {
+    //   setErrors({ upload_type: 'Please select an upload type' });
+    //   return;
+    // }
+    files.forEach((file) => {
+      formData.append('file[]', file);
+    });
+
+    formData.append('type', uploadType);
+
+    let percent = 0;
+    const config = {
+      onUploadProgress: (progressEvent) => {
+        const { loaded, total } = progressEvent;
+        percent = Math.floor((loaded * 100) / total);
+        if (percent <= 100) {
+          setUploadPercentage(percent); // hook to set the value of current level that needs to be passed to the progressbar
+        }
+      }
+    };
+
+    // switch (type) {
+    //   case 'dockReceipt':
+    postUploadFileBooking(booking.id, formData, config)
+      .then((data) => {
+        setUploadPercentage(0);
+        uploadSuccessCb();
+        enqueueSnackbar('File uploaded successfully', {
+          variant: 'success'
+        });
+        // wait(2000);
+        // window.location.reload();
+      })
+      .catch((err) => {
+        setUploadPercentage(0);
+      });
   };
 
   function BookingSuccessDialog({ open, handleClose, message }) {
@@ -218,16 +276,19 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
             try {
               // console.log(values, 'values');
               const response = await postCreateBooking(values);
-              setStatus({ success: true });
+              uploadBookingDocuments(response.data.data, () => {
+                setStatus({ success: true });
+                setSuccessBookingIdUrl(
+                  `/booking/details/${response.data.data.id}`
+                );
+                setOpenBookSuccessDialog(true);
+                wait(5000);
+                router.push(`/booking/details/${response.data.data.id}`);
+              });
               // enqueueSnackbar('You have successfuly booked an appointment!', {
               //   variant: 'success'
               // });
-              setSuccessBookingIdUrl(
-                `/booking/details/${response.data.data.id}`
-              );
-              setOpenBookSuccessDialog(true);
-              await wait(5000);
-              router.push(`/booking/details/${response.data.data.id}`);
+
             } catch (err) {
               // console.log(err, 'err');
               setErrors(err.response.data.errors[0].detail);
@@ -755,6 +816,16 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
                               {...params}
                             />
                           )}
+                        />
+                      </Box>
+                      <Box sx={{ mt: 2 }}>
+                        <FileDropzone
+                          accept="image/*"
+                          files={files}
+                          onDrop={handleDrop}
+                          onRemove={handleRemove}
+                          onRemoveAll={handleRemoveAll}
+                          noUploadBtn
                         />
                       </Box>
                     </Grid>

@@ -158,7 +158,7 @@ const sortDirectionOptions = [
  * @returns null
  */
 const BillingListTable = (props) => {
-  const { orders, bookings, user, ...other } = props;
+  const { orders, bookings, user, page: whatPage, ...other } = props;
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -293,6 +293,7 @@ const BillingListTable = (props) => {
     };
     const response = await getAllBookings(params);
     const bookingModel = _.get(response, 'data.data[0]', null);
+    console.log(_.get(response, 'data.data[0]', null));
     if (bookingModel) {
       dispatch(openBookFileModal({ booking: bookingModel }));
     }
@@ -422,7 +423,7 @@ const BillingListTable = (props) => {
                       {(booking.status === 'completed' && _.get(booking, 'invoice.status') !== 'paid')  && (
                         <>
                           <Tooltip title="Click this to send invoice to the client">
-                            <Button
+                    ``        <Button
                               variant="outlined"
                               size="small"
                               onClick={() =>

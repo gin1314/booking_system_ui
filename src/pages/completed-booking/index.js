@@ -30,7 +30,7 @@ const BillingTable = ({ role, ...others }) => {
     return <BillingListTable {...others} />;
 };
 
-const CompletedBooking = ({ bookings, user, isOnMyBooking }) => {
+const CompletedBooking = ({ bookings, user, isOnMyBooking, page }) => {
   const isMountedRef = useIsMountedRef();
   const { settings } = useSettings();
   const [orders, setOrders] = useState([]);
@@ -81,6 +81,7 @@ const CompletedBooking = ({ bookings, user, isOnMyBooking }) => {
               orders={orders}
               bookings={bookings}
               user={user}
+              page={page}
             />
           </Box>
         </Container>
@@ -149,6 +150,7 @@ export const getServerSideProps = async ({ req, query }) => {
     props: {
       bookings,
       user,
+      page: 'completed-booking'
     }
   };
 };

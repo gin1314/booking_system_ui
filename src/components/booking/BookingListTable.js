@@ -39,15 +39,22 @@ import {
   openModal,
   setModalLabels,
   closeAssignToEngrModal,
-  openAssignToEngrModal
+  openAssignToEngrModal,
+  openBookFileModal
 } from 'src/slices/booking';
+
 import { useDispatch, useSelector } from 'src/store';
-import { postAssignBooking, getAllBookingsFiltered } from 'src/api';
+import {
+  postAssignBooking,
+  getAllBookingsFiltered,
+  getAllBookings
+} from 'src/api';
 import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
 import NProgress from 'nprogress';
 import { SeverityPill } from '../SeverityPill';
 import AssignToEngrModal from './dialogs/AssignToEngrModal';
+import BookingFileDialog from './dialogs/BookingFileDialog';
 
 const severityMap = {
   completed: 'success',
@@ -320,6 +327,7 @@ const BookingListTable = (props) => {
         <Button
           variant="outlined"
           size="small"
+          sx={{ ml: 1 }}
           onClick={() => initiaizelAssignDialog(booking)}
         >
           Assign to Engr
@@ -333,13 +341,26 @@ const BookingListTable = (props) => {
       booking.status !== 'completed'
     ) {
       return (
-        <Button variant="text" size="small">
+        <Button variant="text" size="small" sx={{ ml: 1 }}>
           Assigned
         </Button>
       );
     }
 
     return null;
+  };
+
+  const openDialogFiles = async (booking) => {
+    let params = {
+      'filter[id]': booking.id,
+      include: 'files'
+    };
+    const response = await getAllBookings(params);
+    const bookingModel = _.get(response, 'data.data[0]', null);
+    console.log(_.get(response, 'data.data[0]', null));
+    if (bookingModel) {
+      dispatch(openBookFileModal({ booking: bookingModel }));
+    }
   };
 
   return (
@@ -531,8 +552,19 @@ const BookingListTable = (props) => {
                           Assign
                         </Button>
                       )} */}
+                      <Button
+                        sx={{ ml: 1 }}
+                        variant="outlined"
+                        size="small"
+                        onClick={() => openDialogFiles(booking)}
+                      >
+                        View Documents
+                      </Button>
                       <ActionButtons booking={booking} />
-                      <NextLink href={`/booking/details/${booking.id}`} passHref>
+                      <NextLink
+                        href={`/booking/details/${booking.id}`}
+                        passHref
+                      >
                         <Button variant="text" size="small">
                           Details
                         </Button>
@@ -574,6 +606,7 @@ const BookingListTable = (props) => {
       /> */}
       <BookingConfirmationModal handleAction={handleAssignAction} />
       <AssignToEngrModal handleAction={handleAssignAction} />
+      <BookingFileDialog />
     </>
   );
 };

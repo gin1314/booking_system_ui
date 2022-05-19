@@ -26,7 +26,7 @@ import { useState } from 'react';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   dialog: {
     padding: theme.spacing(3)
@@ -34,19 +34,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const BookingFileDialog = () => {
-  const { isBookFilesOpen, booking } = useSelector(state => state.booking);
+  const { isBookFilesOpen, booking } = useSelector((state) => state.booking);
+  console.log(booking, 'booking');
   const [imageLoaded, setImageLoaded] = useState(false);
   const bookingId = _.get(booking, 'id');
   const filename = _.get(booking, 'files[0].uploaded_file_name');
-  const fileExtension = _.get(booking, 'files[0].file_extension');
+  const files = _.get(booking, 'files');
+  const fileExtension = _.get(
+    booking,
+    'files[0].file_extension',
+    ''
+  ).toLowerCase();
 
   const onDownload = (bookingId, filename, actualName) => {
     const url = `${process.env.corsAnywhereUrl}/${process.env.apiRootURL}/uploads/booking/${bookingId}/${filename}`;
-    axios.get(url, {
-      responseType: 'blob'
-    }).then(res => {
-      fileDownload(res.data, actualName);
-    });
+    axios
+      .get(url, {
+        responseType: 'blob'
+      })
+      .then((res) => {
+        fileDownload(res.data, actualName);
+      });
   };
 
   const onClose = () => {
@@ -75,10 +83,11 @@ const BookingFileDialog = () => {
               <CardActionArea>
                 {(fileExtension === 'png' ||
                   fileExtension === 'webp' ||
+                  fileExtension === 'jpeg' ||
                   fileExtension === 'jpg') && (
                   <>
-                    {imageLoaded ? null : <Skeleton height={700} />}
-                    <CardMedia
+                    {/* {imageLoaded ? null : <Skeleton height={700} />} */}
+                    {/* <CardMedia
                       className={classes.media}
                       component="img"
                       image={`${process.env.corsAnywhereUrl}/${process.env.apiRootURL}/uploads/booking/${bookingId}/${filename}`}
@@ -89,7 +98,28 @@ const BookingFileDialog = () => {
                       onError={() => {
                         setImageLoaded(true);
                       }}
-                    />
+                      sx={{ mb: 2 }}
+                    /> */}
+                    {files.map((file) => (
+                      <CardMedia
+                        className={classes.media}
+                        component="img"
+                        image={`${process.env.corsAnywhereUrl}/${
+                          process.env.apiRootURL
+                        }/uploads/booking/${bookingId}/${_.get(
+                          file,
+                          'uploaded_file_name'
+                        )}`}
+                        title={_.get(booking, 'attributes.file_name')}
+                        onLoad={() => {
+                          setImageLoaded(true);
+                        }}
+                        onError={() => {
+                          setImageLoaded(true);
+                        }}
+                        sx={{ mb: 2 }}
+                      />
+                    ))}
                   </>
                 )}
                 {fileExtension === 'pdf' && (
@@ -122,7 +152,11 @@ const BookingFileDialog = () => {
                 </Button>
                 <Button
                   onClick={() => {
-                    onDownload(bookingId, filename, _.get(booking, 'attributes.file_name'));
+                    onDownload(
+                      bookingId,
+                      filename,
+                      _.get(booking, 'attributes.file_name')
+                    );
                   }}
                   size="small"
                   color="primary"
