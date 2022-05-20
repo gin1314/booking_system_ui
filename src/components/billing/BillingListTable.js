@@ -62,6 +62,7 @@ import { SeverityPill } from '../SeverityPill';
 // import BookingConfirmationModal from '../booking/dialogs/BookingConfirmationModal';
 import CreateInvoiceModal from '../billing/dialogs/CreateInvoiceModal';
 import BookingFileDialog from '../booking/dialogs/BookingFileDialog';
+import SurveyCostCalculatorModal from '../booking/dialogs/SurveyCostCalculatorModal';
 
 const severityMap = {
   paid: 'success',
@@ -308,6 +309,17 @@ const BillingListTable = (props) => {
   return (
     <>
       <Card {...other}>
+        <Box p={2} minHeight={56} display="flex" alignItems="center">
+          <Box>
+            <Button
+              variant="text"
+              size="small"
+              onClick={() => {}}
+            >
+              Survey Lot Calculator
+            </Button>
+          </Box>
+        </Box>
         <CardHeader action={<div />} title="My Bookings" />
         <Divider />
         {/* <Scrollbar> */}
@@ -420,29 +432,31 @@ const BillingListTable = (props) => {
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      {(booking.status === 'completed' && _.get(booking, 'invoice.status') !== 'paid')  && (
-                        <>
-                          <Tooltip title="Click this to send invoice to the client">
-                    ``        <Button
+                      {booking.status === 'completed' &&
+                        _.get(booking, 'invoice.status') !== 'paid' && (
+                          <>
+                            <Tooltip title="Click this to send invoice to the client">
+                              ``{' '}
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() =>
+                                  initializeMakeInvoiceDialog(booking)
+                                }
+                              >
+                                Make an Invoice
+                              </Button>
+                            </Tooltip>
+                            <Button
+                              sx={{ ml: 1 }}
                               variant="outlined"
                               size="small"
-                              onClick={() =>
-                                initializeMakeInvoiceDialog(booking)
-                              }
+                              onClick={() => openDialogFiles(booking)}
                             >
-                              Make an Invoice
+                              View Lot Survey
                             </Button>
-                          </Tooltip>
-                          <Button
-                            sx={{ ml: 1 }}
-                            variant="outlined"
-                            size="small"
-                            onClick={() => openDialogFiles(booking)}
-                          >
-                            View Lot Survey
-                          </Button>
-                        </>
-                      )}
+                          </>
+                        )}
                       {booking.status === 'confirmed' && (
                         <Tooltip title="Click this if you have completed the survey">
                           <Button
@@ -505,6 +519,7 @@ const BillingListTable = (props) => {
 
       <CreateInvoiceModal handleAction={handleMakeInvoiceAction} />
       <BookingFileDialog />
+      <SurveyCostCalculatorModal open/>
     </>
   );
 };
