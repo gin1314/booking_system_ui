@@ -17,7 +17,7 @@ import {
 import { useSelector, useDispatch } from 'src/store';
 import { closeMakeInvoiceModal, setInvoiceAmount } from 'src/slices/booking';
 
-const BookingConfirmationModal = (props) => {
+const CreateInvoiceModal = (props) => {
   const {
     children,
     authorAvatar,
@@ -81,6 +81,6 @@ const BookingConfirmationModal = (props) => {
   );
 };
 
-BookingConfirmationModal.propTypes = {};
+CreateInvoiceModal.propTypes = {};
 
-export default BookingConfirmationModal;
+export default CreateInvoiceModal;

@@ -294,7 +294,6 @@ const BillingListTable = (props) => {
     };
     const response = await getAllBookings(params);
     const bookingModel = _.get(response, 'data.data[0]', null);
-    console.log(_.get(response, 'data.data[0]', null));
     if (bookingModel) {
       dispatch(openBookFileModal({ booking: bookingModel }));
     }
@@ -309,7 +308,7 @@ const BillingListTable = (props) => {
   return (
     <>
       <Card {...other}>
-        <Box p={2} minHeight={56} display="flex" alignItems="center">
+        {/* <Box p={2} minHeight={56} display="flex" alignItems="center">
           <Box>
             <Button
               variant="text"
@@ -319,7 +318,7 @@ const BillingListTable = (props) => {
               Survey Lot Calculator
             </Button>
           </Box>
-        </Box>
+        </Box> */}
         <CardHeader action={<div />} title="My Bookings" />
         <Divider />
         {/* <Scrollbar> */}
@@ -436,7 +435,6 @@ const BillingListTable = (props) => {
                         _.get(booking, 'invoice.status') !== 'paid' && (
                           <>
                             <Tooltip title="Click this to send invoice to the client">
-                              ``{' '}
                               <Button
                                 variant="outlined"
                                 size="small"
@@ -517,9 +515,9 @@ const BillingListTable = (props) => {
         />
       </Card>
 
-      <CreateInvoiceModal handleAction={handleMakeInvoiceAction} />
+      {/* <CreateInvoiceModal handleAction={handleMakeInvoiceAction} /> */}
       <BookingFileDialog />
-      <SurveyCostCalculatorModal open/>
+      <SurveyCostCalculatorModal handleAction={handleMakeInvoiceAction} />
     </>
   );
 };

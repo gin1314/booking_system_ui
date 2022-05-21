@@ -104,7 +104,7 @@ export const getServerSideProps = async ({ req, query }) => {
 
   let bookingQuery = {
     sort: '-id',
-    include: 'user,invoice',
+    include: 'user,invoice,invoice_status_unpaid',
     'filter[status]': 'completed'
   };
   try {
@@ -150,7 +150,7 @@ export const getServerSideProps = async ({ req, query }) => {
   return {
     props: {
       bookings,
-      user,
+      user
     }
   };
 };
