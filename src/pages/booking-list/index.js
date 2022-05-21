@@ -177,7 +177,8 @@ export const getServerSideProps = async ({ req, query }) => {
 
   let bookingQuery = {
     sort: '-id',
-    include: 'user'
+    include: 'user',
+    'filter[status]': 'pending,assigned,cancelled'
   };
   let isOnMyBooking = false;
   let isOnLotSurvey = false;
