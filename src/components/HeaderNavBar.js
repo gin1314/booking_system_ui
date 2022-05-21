@@ -54,12 +54,12 @@ export default function HeaderNavBar() {
   return (
     <Navigation>
       <ul role="menubar" /* onKeyDown={handleLeftRightArrow} */>
-        {/* <li role="none">
+        <li role="none">
           <Link role="menuitem" href={'/pricing'}>
             Pricing
           </Link>
         </li>
-        <li role="none">
+        {/* <li role="none">
           <Link role="menuitem" href={'/about-us'}>
             About us
           </Link>
