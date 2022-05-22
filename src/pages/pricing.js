@@ -260,7 +260,7 @@ const boundaryRows = [
 const locationRows = [
   createLocationData('Residential', 'PHP 5,000 per plan/sheet'),
   createLocationData('Agricultural', 'PHP 7,000 per plan/sheet'),
-  createLocationData('Industrial/Commercial', 'PHP 8,000 per plan/sheet')
+  createLocationData('Industrial/Commercial', 'PHP 10,000 per plan/sheet')
 ];
 
 const topographicRows = [
