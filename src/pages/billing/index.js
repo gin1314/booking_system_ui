@@ -104,7 +104,7 @@ export const getServerSideProps = async ({ req, query }) => {
 
   let bookingQuery = {
     sort: '-id',
-    include: 'user,invoice,invoice_status_unpaid',
+    include: 'user,invoice',
     'filter[status]': 'completed'
   };
   try {
