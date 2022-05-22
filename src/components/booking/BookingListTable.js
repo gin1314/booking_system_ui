@@ -327,7 +327,7 @@ const BookingListTable = (props) => {
         <Button
           variant="outlined"
           size="small"
-          sx={{ ml: 1 }}
+          sx={{ ml: 1, mt: 1 }}
           onClick={() => initiaizelAssignDialog(booking)}
         >
           Assign to Engr
@@ -341,7 +341,7 @@ const BookingListTable = (props) => {
       booking.status !== 'completed'
     ) {
       return (
-        <Button variant="text" size="small" sx={{ ml: 1 }}>
+        <Button variant="text" size="small" sx={{ ml: 1, mt: 1 }}>
           Assigned
         </Button>
       );
@@ -565,7 +565,7 @@ const BookingListTable = (props) => {
                         href={`/booking/details/${booking.id}`}
                         passHref
                       >
-                        <Button variant="text" size="small">
+                        <Button variant="text" size="small" sx={{mt:2}}>
                           Details
                         </Button>
                       </NextLink>

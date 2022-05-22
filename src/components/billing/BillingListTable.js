@@ -163,7 +163,7 @@ const BillingListTable = (props) => {
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const { booking, forType, invoiceAmount } = useSelector(
+  const { booking, forType, invoiceAmount, metadata } = useSelector(
     (state) => state.booking
   );
 
@@ -245,7 +245,7 @@ const BillingListTable = (props) => {
       //   default:
       //     break;
       // }
-      await postCreateInvoice(booking.id, { amount: invoiceAmount });
+      await postCreateInvoice(booking.id, { amount: invoiceAmount, metadata });
       enqueueSnackbar('Invoice has been sent to the client!', {
         variant: 'success'
       });
@@ -353,9 +353,9 @@ const BillingListTable = (props) => {
             <TableBody>
               {bookings.data.length <= 0 && (
                 <TableRow>
-                  <TableCell colSpan={6}>
+                  <TableCell colSpan={10}>
                     <Typography variant="subtitle2">
-                      You have no assigned bookings yet 😢
+                      Nothing here yet 😢
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -437,6 +437,7 @@ const BillingListTable = (props) => {
                             <Tooltip title="Click this to send invoice to the client">
                               <Button
                                 variant="outlined"
+                                sx={{ mt: 1 }}
                                 size="small"
                                 onClick={() =>
                                   initializeMakeInvoiceDialog(booking)
@@ -446,7 +447,7 @@ const BillingListTable = (props) => {
                               </Button>
                             </Tooltip>
                             <Button
-                              sx={{ ml: 1 }}
+                              sx={{ ml: 1, mt: 1 }}
                               variant="outlined"
                               size="small"
                               onClick={() => openDialogFiles(booking)}
@@ -460,6 +461,7 @@ const BillingListTable = (props) => {
                           <Button
                             variant="outlined"
                             size="small"
+                            sx={{ mt: 1 }}
                             onClick={() => initiaizelCompletedDialog(booking)}
                           >
                             Complete Booking
@@ -471,12 +473,14 @@ const BillingListTable = (props) => {
                           <Button
                             variant="text"
                             size="small"
+                            sx={{ mt: 1 }}
                             onClick={() => handleSurveyProcessing(booking)}
                           >
                             Process
                           </Button>
                           <Button
                             variant="text"
+                            sx={{ mt: 1 }}
                             size="small"
                             onClick={() => handleSurveyReceiving(booking)}
                           >

@@ -6,6 +6,7 @@ const initialState = {
   isMakeInvoiceModalOpen: false,
   isAssingToEngrModalOpen: false,
   invoiceAmount: null,
+  metadata: {},
   bookFilesCloseDialog: false,
   isBookFilesOpen: false,
   selectedBookingId: null,
@@ -73,6 +74,7 @@ const slice = createSlice({
     },
     setInvoiceAmount(state, action) {
       state.invoiceAmount = action.payload.invoiceAmount;
+      state.metadata = action.payload.metadata;
     },
     openMakeInvoiceModal(state, action) {
       state.isMakeInvoiceModalOpen = true;
@@ -158,8 +160,8 @@ export const setAssignedUser =
   };
 
 export const setInvoiceAmount =
-  ({ invoiceAmount }) =>
+  ({ invoiceAmount, metadata }) =>
   (dispatch) => {
-    dispatch(slice.actions.setInvoiceAmount({ invoiceAmount }));
+    dispatch(slice.actions.setInvoiceAmount({ invoiceAmount, metadata }));
   };
 export default slice;

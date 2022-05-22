@@ -97,7 +97,14 @@ const BoundaryConstruction = (props) => {
         dispatch(
           setInvoiceAmount({
             invoiceAmount:
-              _.get(constructionSurveyTariff, `${x}.${y}`, 842) * 1000
+              _.get(constructionSurveyTariff, `${x}.${y}`, 842) * 1000,
+            metadata: [
+              { field: 'Survey Type', value: 'Construction Survey' },
+              {
+                field: 'Area',
+                value: `${parseInt(event.target.value)} hectares`
+              }
+            ]
           })
         );
         break;
@@ -105,7 +112,14 @@ const BoundaryConstruction = (props) => {
         setComputedCost(_.get(boundarySurveyTariff, `${x}.${y}`, 421) * 1000);
         dispatch(
           setInvoiceAmount({
-            invoiceAmount: _.get(boundarySurveyTariff, `${x}.${y}`, 421) * 1000
+            invoiceAmount: _.get(boundarySurveyTariff, `${x}.${y}`, 421) * 1000,
+            metadata: [
+              { field: 'Survey Type', value: 'Boundary Survey' },
+              {
+                field: 'Area',
+                value: `${parseInt(event.target.value)} hectares`
+              }
+            ]
           })
         );
       default:
@@ -174,6 +188,10 @@ const LocationSurvey = (props) => {
   };
   const [computedCost, setComputedCost] = useState(0);
   const dispatch = useDispatch();
+  const metadata = [
+    { field: 'Survey Type', value: 'Location Survey' },
+    { field: 'Plan/Sheet', value: 'Location Survey' }
+  ];
 
   const handleSheetChange = (event) => {
     switch (plan) {
@@ -185,7 +203,11 @@ const LocationSurvey = (props) => {
           setComputedCost(parseInt(event.target.value) * 5000);
           dispatch(
             setInvoiceAmount({
-              invoiceAmount: parseInt(event.target.value) * 5000
+              invoiceAmount: parseInt(event.target.value) * 5000,
+              metadata: [
+                { field: 'Survey Type', value: 'Location Survey' },
+                { field: 'Plan/Sheet', value: parseInt(event.target.value) }
+              ]
             })
           );
           return parseInt(event.target.value);
@@ -200,7 +222,11 @@ const LocationSurvey = (props) => {
           setComputedCost(parseInt(event.target.value) * 7000);
           dispatch(
             setInvoiceAmount({
-              invoiceAmount: parseInt(event.target.value) * 7000
+              invoiceAmount: parseInt(event.target.value) * 7000,
+              metadata: [
+                { field: 'Survey Type', value: 'Location Survey' },
+                { field: 'Plan/Sheet', value: parseInt(event.target.value) }
+              ]
             })
           );
           return parseInt(event.target.value);
@@ -214,7 +240,11 @@ const LocationSurvey = (props) => {
           setComputedCost(parseInt(event.target.value) * 10000);
           dispatch(
             setInvoiceAmount({
-              invoiceAmount: parseInt(event.target.value) * 10000
+              invoiceAmount: parseInt(event.target.value) * 10000,
+              metadata: [
+                { field: 'Survey Type', value: 'Location Survey' },
+                { field: 'Plan/Sheet', value: parseInt(event.target.value) }
+              ]
             })
           );
           return parseInt(event.target.value);
@@ -314,7 +344,6 @@ const SubdivisionSurvey = (props) => {
               )
             }}
           />
-
         </FormControl>
       </Box>
       <Box minHeight={56} display="flex" alignItems="center">

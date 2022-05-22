@@ -127,7 +127,7 @@ const UploadLotSurveyModal = (props) => {
         <DialogContentText id="alert-dialog-description">
           <Box sx={{ mb: 1 }}>{modalParams.body}</Box>
           <FileDropzone
-            accept="image/*"
+            accept={['image/*', 'application/pdf']}
             files={files}
             onDrop={handleDrop}
             onRemove={handleRemove}

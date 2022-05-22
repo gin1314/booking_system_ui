@@ -355,7 +355,7 @@ const BookingListTableEngineer = (props) => {
                 <TableRow>
                   <TableCell colSpan={6}>
                     <Typography variant="subtitle2">
-                      You have no assigned bookings yet 😢
+                      Nothing here yet 😢
                     </Typography>
                   </TableCell>
                 </TableRow>

@@ -277,7 +277,7 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
               // console.log(values, 'values');
               const response = await postCreateBooking(values);
               await wait(2000);
-              if(files.length > 0) {
+              if (files.length > 0) {
                 uploadBookingDocuments(response.data.data, async () => {
                   setStatus({ success: true });
                   setSuccessBookingIdUrl(
@@ -299,7 +299,6 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
               // enqueueSnackbar('You have successfuly booked an appointment!', {
               //   variant: 'success'
               // });
-
             } catch (err) {
               // console.log(err, 'err');
               setErrors(err.response.data.errors[0].detail);
@@ -831,7 +830,7 @@ const Booking = ({ timeslot, surveyTypeHints }) => {
                       </Box>
                       <Box sx={{ mt: 2 }}>
                         <FileDropzone
-                          accept="image/*"
+                          accept={['image/*', 'application/pdf']}
                           files={files}
                           onDrop={handleDrop}
                           onRemove={handleRemove}
