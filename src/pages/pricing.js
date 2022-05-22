@@ -154,7 +154,7 @@ const constructionRows = [
 ];
 
 const boundaryRows = [
-  createBoundaryData('< 0.5', '', '', '', '', '', '', ''),
+  createBoundaryData('< 0.5', '20,000', '', '', '', '', '', ''),
   createBoundaryData(
     '0.5 - 1.0',
     '30,000',
