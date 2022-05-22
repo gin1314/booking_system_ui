@@ -33,6 +33,10 @@ function createBoundaryData(name, t0, t10, t20, t30, t40, t50, t60) {
   return { name, t0, t10, t20, t30, t40, t50, t60 };
 }
 
+function createConstructionData(name, t0, t10, t20, t30, t40, t50, t60) {
+  return { name, t0, t10, t20, t30, t40, t50, t60 };
+}
+
 function createLocationData(name, cost) {
   return { name, cost };
 }
@@ -41,7 +45,11 @@ function createTopographicData(name, t1, t2, t3, t4) {
   return { name, t1, t2, t3, t4 };
 }
 
-const boundaryRows = [
+function createSubdivisionData(name, t1, t2, t3, t4, t5) {
+  return { name, t1, t2, t3, t4, t5 };
+}
+
+const constructionRows = [
   createBoundaryData('<0.5', '40,000', '', '', '', '', '', ''),
   createBoundaryData(
     '0.5 - 1.0',
@@ -65,83 +73,187 @@ const boundaryRows = [
   ),
   createBoundaryData(
     '3',
-    '76,000',
-    '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '92,000',
+    '246,000',
+    '380,000',
+    '500,000',
+    '602,000',
+    '692,000',
+    '786,000'
   ),
   createBoundaryData(
     '4',
-    '76,000',
-    '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '108,000',
+    '260,000',
+    '392,000',
+    '512,000',
+    '612,000',
+    '702,000',
+    '794,000'
   ),
   createBoundaryData(
     '5',
-    '76,000',
-    '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '124,000',
+    '274,000',
+    '404,000',
+    '512,000',
+    '612,000',
+    '712,000',
+    '802,000'
   ),
   createBoundaryData(
     '6',
-    '76,000',
-    '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '140,000',
+    '288,000',
+    '416,000',
+    '524,000',
+    '622,000',
+    '722,000',
+    '810,000'
   ),
   createBoundaryData(
     '7',
-    '76,000',
-    '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '156,000',
+    '302,000',
+    '428,000',
+    '536,000',
+    '632,000',
+    '732,000',
+    '818,000'
   ),
   createBoundaryData(
     '8',
-    '76,000',
-    '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '172,000',
+    '316,000',
+    '440,000',
+    '548,000',
+    '642,000',
+    '742,000',
+    '826,000'
   ),
   createBoundaryData(
     '9',
-    '76,000',
-    '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '188,000',
+    '330,000',
+    '452,000',
+    '560,000',
+    '652,000',
+    '752,000',
+    '834,000'
   ),
   createBoundaryData(
     '10',
-    '76,000',
+    '204,000',
+    '344,000',
+    '464,000',
+    '572,000',
+    '662,000',
+    '762,000',
+    '842,000'
+  )
+];
+
+const boundaryRows = [
+  createBoundaryData('< 0.5', '', '', '', '', '', '', ''),
+  createBoundaryData(
+    '0.5 - 1.0',
+    '30,000',
+    '109,000',
+    '178,000',
+    '238,000',
+    '291,000',
+    '336,000',
+    '385,000'
+  ),
+  createBoundaryData(
+    '2',
+    '38,000',
+    '116,000',
+    '184,000',
+    '244,000',
+    '296,000',
+    '341,000',
+    '389,000'
+  ),
+  createBoundaryData(
+    '3',
+    '46,000',
+    '123,000',
+    '190,000',
+    '250,000',
+    '301,000',
+    '346,000',
+    '393,000'
+  ),
+  createBoundaryData(
+    '4',
+    '54,000',
+    '130,000',
+    '196,000',
+    '256,000',
+    '306,000',
+    '351,000',
+    '397,000'
+  ),
+  createBoundaryData(
+    '5',
+    '62,000',
+    '137,000',
+    '202,000',
+    '256,000',
+    '306,000',
+    '356,000',
+    '401,000'
+  ),
+  createBoundaryData(
+    '6',
+    '70,000',
+    '144,000',
+    '208,000',
+    '262,000',
+    '311,000',
+    '361,000',
+    '405,000'
+  ),
+  createBoundaryData(
+    '7',
+    '78,000',
+    '151,000',
+    '214,000',
+    '268,000',
+    '316,000',
+    '366,000',
+    '409,000'
+  ),
+  createBoundaryData(
+    '8',
+    '86,000',
+    '158,000',
+    '220,000',
+    '274,000',
+    '321,000',
+    '371,000',
+    '413,000'
+  ),
+  createBoundaryData(
+    '9',
+    '94,000',
+    '165,000',
+    '226,000',
+    '280,000',
+    '326,000',
+    '376,000',
+    '417,000'
+  ),
+  createBoundaryData(
+    '10',
+    '102,000',
+    '172,000',
     '232,000',
-    '368,000',
-    '488,000',
-    '592,000',
-    '682,000',
-    '778,000'
+    '286,000',
+    '331,000',
+    '281,000',
+    '421,000'
   )
 ];
 
@@ -179,6 +291,100 @@ const topographicRows = [
     'PHP 15,000',
     'PHP 8,000',
     'PHP 6,000'
+  )
+];
+
+const subdivisionData = [
+  createSubdivisionData(
+    '2 to 4',
+    '20,00',
+    'plus',
+    '8,500/lot',
+    'In excess of 2 lots'
+  ),
+  createSubdivisionData(
+    '5 to 9',
+    '45,00',
+    'plus',
+    '7,000/lot',
+    'In excess of 5 lots'
+  ),
+  createSubdivisionData(
+    '10 to 19',
+    '80,500',
+    'plus',
+    '5,000/lot',
+    'In excess of 10 lots'
+  ),
+  createSubdivisionData(
+    '20 to 29',
+    '120,00',
+    'plus',
+    '4,800/lot',
+    'In excess of 20 lots'
+  ),
+  createSubdivisionData(
+    '30 to 39',
+    '178,500',
+    'plus',
+    '4,300/lot',
+    'In excess of 30 lots'
+  ),
+  createSubdivisionData(
+    '40 to 49',
+    '221,500',
+    'plus',
+    '3,800/lot',
+    'In excess of 40 lots'
+  ),
+  createSubdivisionData(
+    '50 to 99',
+    '259,500',
+    'plus',
+    '3,300/lot',
+    'In excess of 50 lots'
+  ),
+  createSubdivisionData(
+    '100 to 199',
+    '424,500',
+    'plus',
+    '2,800/lot',
+    'In excess of 100 lots'
+  ),
+  createSubdivisionData(
+    '200 to 299',
+    '704,500',
+    'plus',
+    '2,600/lot',
+    'In excess of 200 lots'
+  ),
+  createSubdivisionData(
+    '300 to 399',
+    '964,500',
+    'plus',
+    '2,400/lot',
+    'In excess of 300 lots'
+  ),
+  createSubdivisionData(
+    '400 to 499',
+    '1,204,500',
+    'plus',
+    '2,200/lot',
+    'In excess of 400 lots'
+  ),
+  createSubdivisionData(
+    '500 to 999',
+    '1,424,500',
+    'plus',
+    '2,000/lot',
+    'In excess of 500 lots'
+  ),
+  createSubdivisionData(
+    '1000 AND UP ',
+    '2,424,500',
+    'plus',
+    '1,400/lot',
+    'In excess of 1000 lots'
   )
 ];
 
@@ -309,120 +515,234 @@ const AppHeader = () => {
           <Container
             sx={{
               minHeight: 500,
-              height: 'calc(100vh - 120px)',
-              maxHeight: { xs: 500, sm: 700, xl: 1000 },
+              // height: 'calc(100vh - 120px)',
+              // maxHeight: { xs: 500, sm: 700, xl: 1000 },
               transition: '0.3s'
             }}
           >
-            <TableContainer component={Paper}>
-              <Table
-                sx={{ minWidth: 650 }}
-                size="small"
-                aria-label="a dense table"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Areas in Hectares</TableCell>
-                    <TableCell>0</TableCell>
-                    <TableCell>10</TableCell>
-                    <TableCell>20</TableCell>
-                    <TableCell>30</TableCell>
-                    <TableCell>40</TableCell>
-                    <TableCell>50</TableCell>
-                    <TableCell>60</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {boundaryRows.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.t0}</TableCell>
-                      <TableCell>{row.t10}</TableCell>
-                      <TableCell>{row.t20}</TableCell>
-                      <TableCell>{row.t30}</TableCell>
-                      <TableCell>{row.t40}</TableCell>
-                      <TableCell>{row.t50}</TableCell>
-                      <TableCell>{row.t60}</TableCell>
+            <Box mt={5}>
+              <Typography variant="h3" sx={{ my: 2, maxWidth: 500 }}>
+                Pricing
+              </Typography>
+            </Box>
+            <Box mt={5}>
+              <Typography variant="h6" sx={{ my: 2, maxWidth: 500 }}>
+                Construction Survey
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 650 }}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Areas in Hectares</TableCell>
+                      <TableCell>0</TableCell>
+                      <TableCell>10</TableCell>
+                      <TableCell>20</TableCell>
+                      <TableCell>30</TableCell>
+                      <TableCell>40</TableCell>
+                      <TableCell>50</TableCell>
+                      <TableCell>60</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {constructionRows.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 }
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell>{row.t0}</TableCell>
+                        <TableCell>{row.t10}</TableCell>
+                        <TableCell>{row.t20}</TableCell>
+                        <TableCell>{row.t30}</TableCell>
+                        <TableCell>{row.t40}</TableCell>
+                        <TableCell>{row.t50}</TableCell>
+                        <TableCell>{row.t60}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
 
-            <TableContainer component={Paper}>
-              <Table
-                sx={{ minWidth: 650 }}
-                size="small"
-                aria-label="a dense table"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Types of Plan</TableCell>
-                    <TableCell>Costing</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {locationRows.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.cost}</TableCell>
+            <Box mt={5}>
+              <Typography variant="h6" sx={{ my: 2, maxWidth: 500 }}>
+                Boundary Survey
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 650 }}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Areas in Hectares</TableCell>
+                      <TableCell>0</TableCell>
+                      <TableCell>10</TableCell>
+                      <TableCell>20</TableCell>
+                      <TableCell>30</TableCell>
+                      <TableCell>40</TableCell>
+                      <TableCell>50</TableCell>
+                      <TableCell>60</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {boundaryRows.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 }
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell>{row.t0}</TableCell>
+                        <TableCell>{row.t10}</TableCell>
+                        <TableCell>{row.t20}</TableCell>
+                        <TableCell>{row.t30}</TableCell>
+                        <TableCell>{row.t40}</TableCell>
+                        <TableCell>{row.t50}</TableCell>
+                        <TableCell>{row.t60}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
 
-            <TableContainer component={Paper}>
-              <Table
-                sx={{ minWidth: 650 }}
-                size="small"
-                aria-label="a dense table"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center" colSpan={1}>
-
-                    </TableCell>
-                    <TableCell align="center" colSpan={4}>
-                      Cost Per Hectares
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Contour Interval</TableCell>
-                    <TableCell>First 1 Hectare or Less</TableCell>
-                    <TableCell>Succeding up to 10 Hectares</TableCell>
-                    <TableCell>Succeding up to 20 Hectares</TableCell>
-                    <TableCell>In excess of 20 Hectares</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {topographicRows.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.t1}</TableCell>
-                      <TableCell>{row.t2}</TableCell>
-                      <TableCell>{row.t3}</TableCell>
-                      <TableCell>{row.t4}</TableCell>
+            <Box mt={5}>
+              <Typography variant="h6" sx={{ my: 2, maxWidth: 500 }}>
+                Location Survey
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 650 }}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Types of Plan</TableCell>
+                      <TableCell>Costing</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {locationRows.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 }
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell>{row.cost}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+
+            <Box mt={5}>
+              <Typography variant="h6" sx={{ my: 2, maxWidth: 500 }}>
+                Topographic Survey
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 650 }}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center" colSpan={1}></TableCell>
+                      <TableCell align="center" colSpan={4}>
+                        Cost Per Hectares
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Contour Interval</TableCell>
+                      <TableCell>First 1 Hectare or Less</TableCell>
+                      <TableCell>Succeding up to 10 Hectares</TableCell>
+                      <TableCell>Succeding up to 20 Hectares</TableCell>
+                      <TableCell>In excess of 20 Hectares</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {topographicRows.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 }
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell>{row.t1}</TableCell>
+                        <TableCell>{row.t2}</TableCell>
+                        <TableCell>{row.t3}</TableCell>
+                        <TableCell>{row.t4}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+
+            <Box mt={5}>
+              <Typography variant="h6" sx={{ my: 2, maxWidth: 500 }}>
+                Subdivision Survey
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 650 }}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center" colSpan={1}>
+                        No. Of Lots
+                      </TableCell>
+                      <TableCell align="center" colSpan={4}>
+                        Fees
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {subdivisionData.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 }
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell>{row.t1}</TableCell>
+                        <TableCell>{row.t2}</TableCell>
+                        <TableCell>{row.t3}</TableCell>
+                        <TableCell>{row.t4}</TableCell>
+                        <TableCell>{row.t5}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
           </Container>
         </Box>
         {/* {end hero section} */}
