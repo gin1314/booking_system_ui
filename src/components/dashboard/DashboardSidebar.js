@@ -26,17 +26,17 @@ const adminSections = [
       {
         title: 'Bookings / Transactions',
         path: '/booking-list',
-        icon: <ReceiptIcon fontSize="small" />
+        icon: <ReceiptIcon fontSize="small" sx={{ color: (theme) => theme.palette.success.main }}/>
       },
       {
         title: 'Billing',
         path: '/billing',
-        icon: <ReceiptIcon fontSize="small" />
+        icon: <ReceiptIcon fontSize="small" sx={{ color: (theme) => theme.palette.warning.main }}/>
       },
       {
         title: 'Completed Bookings',
         path: '/completed-booking',
-        icon: <ReceiptIcon fontSize="small" />
+        icon: <ReceiptIcon fontSize="small" sx={{ color: (theme) => theme.palette.warning.main }}/>
       },
       // {
       //   title: 'Billing',
@@ -51,7 +51,7 @@ const adminSections = [
       {
         title: 'User Management',
         path: '/dashboard/analytics',
-        icon: <UsersIcon fontSize="small" />,
+        icon: <UsersIcon fontSize="small" sx={{ color: (theme) => theme.palette.error.main }} />,
         children: [
           {
             title: 'Create User',

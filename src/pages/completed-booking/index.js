@@ -15,6 +15,7 @@ import {
   BookingListTable,
   BookingListTableEngineer
 } from 'src/components/booking';
+import { lighten } from '@mui/material/styles';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 import useSettings from 'src/hooks/useSettings';
 import ChevronRightIcon from 'src/icons/ChevronRight';
@@ -61,7 +62,7 @@ const CompletedBooking = ({ bookings, user, isOnMyBooking, page }) => {
       </Helmet>
       <Box
         sx={{
-          backgroundColor: 'background.default',
+          backgroundColor: (theme) => lighten(theme.palette.primary.main, 0.8),
           minHeight: '100%',
           py: 8
         }}
