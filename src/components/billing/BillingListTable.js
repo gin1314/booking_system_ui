@@ -47,7 +47,8 @@ import {
   openMakeInvoiceModal,
   closeMakeInvoiceModal,
   setModalLabels,
-  openBookFileModal
+  openBookFileModal,
+  openRemarksModal
 } from 'src/slices/booking';
 import { useDispatch, useSelector } from 'src/store';
 import {
@@ -56,7 +57,7 @@ import {
   getAllBookings,
   postCreateInvoice,
   getSendSurveyProcessing,
-  getSendSurveyReceiving
+  postSendSurveyReceiving
 } from 'src/api';
 // import BookingConfirmationModal from './dialogs/BookingConfirmationModal';
 import Label from '../Label';
@@ -66,6 +67,7 @@ import { SeverityPill } from '../SeverityPill';
 import CreateInvoiceModal from '../billing/dialogs/CreateInvoiceModal';
 import BookingFileDialog from '../booking/dialogs/BookingFileDialog';
 import SurveyCostCalculatorModal from '../booking/dialogs/SurveyCostCalculatorModal';
+import RemarksOnReceivingModal from './dialogs/RemarksOnReceivingModal';
 
 const severityMap = {
   paid: 'success',
@@ -167,7 +169,7 @@ const BillingListTable = (props) => {
   const [bookingsState, setBookingsState] = useState(bookings);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const { booking, forType, invoiceAmount, metadata } = useSelector(
+  const { booking, forType, invoiceAmount, metadata, remarks } = useSelector(
     (state) => state.booking
   );
 
@@ -220,6 +222,18 @@ const BillingListTable = (props) => {
         closeLabel: 'Close',
         agreeLabel: 'Complete',
         body: 'Are you sure you want to complete this booking?'
+      })
+    );
+  };
+
+  const initializeRemarksDialog = async (booking) => {
+    dispatch(openRemarksModal({ booking }));
+    dispatch(
+      setModalLabels({
+        title: 'Add remarks to the email',
+        closeLabel: 'Close',
+        agreeLabel: 'Confirm',
+        body: 'Are you sure you want to send an email?'
       })
     );
   };
@@ -278,9 +292,9 @@ const BillingListTable = (props) => {
     }
   };
 
-  const handleSurveyReceiving = async (booking) => {
+  const handleSurveyReceiving = async () => {
     try {
-      await getSendSurveyReceiving(booking.id);
+      await postSendSurveyReceiving(booking.id, { remarks });
       enqueueSnackbar('An email has been sent to the client!', {
         variant: 'success'
       });
@@ -502,7 +516,9 @@ const BillingListTable = (props) => {
                               variant="text"
                               sx={{ ml: 1 }}
                               size="small"
-                              onClick={() => handleSurveyReceiving(booking)}
+                              onClick={() => {
+                                initializeRemarksDialog(booking);
+                              }}
                             >
                               <CallReceivedIcon />
                             </Button>
@@ -543,6 +559,7 @@ const BillingListTable = (props) => {
       {/* <CreateInvoiceModal handleAction={handleMakeInvoiceAction} /> */}
       <BookingFileDialog />
       <SurveyCostCalculatorModal handleAction={handleMakeInvoiceAction} />
+      <RemarksOnReceivingModal handleAction={handleSurveyReceiving} />
     </>
   );
 };

@@ -7,6 +7,8 @@ const initialState = {
   isAssingToEngrModalOpen: false,
   invoiceAmount: null,
   metadata: {},
+  remarks: '',
+  isRemarksModalOpen: false,
   bookFilesCloseDialog: false,
   isBookFilesOpen: false,
   selectedBookingId: null,
@@ -84,6 +86,16 @@ const slice = createSlice({
     closeMakeInvoiceModal(state, action) {
       state.isMakeInvoiceModalOpen = false;
       state.selectedBookingId = null;
+    },
+    openRemarksModal(state, action) {
+      state.booking = action.payload.booking;
+      state.isRemarksModalOpen = true;
+    },
+    closeRemarksModal(state, action) {
+      state.isRemarksModalOpen = false;
+    },
+    setRemarks(state, action) {
+      state.remarks = action.payload.remarks;
     }
   }
 });
@@ -164,4 +176,18 @@ export const setInvoiceAmount =
   (dispatch) => {
     dispatch(slice.actions.setInvoiceAmount({ invoiceAmount, metadata }));
   };
+
+export const setRemarks =
+  ({ remarks }) =>
+  (dispatch) => {
+    dispatch(slice.actions.setRemarks({ remarks }));
+  };
+
+export const openRemarksModal = ({ booking }) => (dispatch) => {
+  dispatch(slice.actions.openRemarksModal({ booking }));
+};
+
+export const closeRemarksModal = () => (dispatch) => {
+  dispatch(slice.actions.closeRemarksModal());
+};
 export default slice;

@@ -109,8 +109,8 @@ const getSendSurveyProcessing = (bookingId) => {
   return iAxios.get(`/user/send-email/survey/processing/${bookingId}`);
 };
 
-const getSendSurveyReceiving = (bookingId) => {
-  return iAxios.get(`/user/send-email/survey/receiving/${bookingId}`);
+const postSendSurveyReceiving = (bookingId, params = {}) => {
+  return iAxios.post(`/user/send-email/survey/receiving/${bookingId}`, params);
 };
 
 export {
@@ -129,6 +129,6 @@ export {
   postUploadFileBooking,
   postCreateInvoice,
   getSendSurveyProcessing,
-  getSendSurveyReceiving
+  postSendSurveyReceiving
 };
 export default iAxios;
