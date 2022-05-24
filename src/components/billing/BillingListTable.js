@@ -35,7 +35,10 @@ import {
 import { useSnackbar } from 'notistack';
 import ArrowRightIcon from '../../icons/ArrowRight';
 import PencilAltIcon from '../../icons/PencilAlt';
-// Label
+import CallReceivedIcon from '@mui/icons-material/CallReceived';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import PreviewIcon from '@mui/icons-material/Preview';
 import MoreMenu from '../MoreMenu';
 import Scrollbar from '../Scrollbar';
 import {
@@ -67,6 +70,7 @@ import SurveyCostCalculatorModal from '../booking/dialogs/SurveyCostCalculatorMo
 const severityMap = {
   paid: 'success',
   pending: 'info',
+  completed: 'success',
   failed: 'error'
 };
 
@@ -266,6 +270,7 @@ const BillingListTable = (props) => {
         variant: 'success'
       });
       dispatch(closeMakeInvoiceModal());
+      window.location.reload();
     } catch (error) {
       enqueueSnackbar('Something went wrong', {
         variant: 'error'
@@ -280,6 +285,7 @@ const BillingListTable = (props) => {
         variant: 'success'
       });
       dispatch(closeMakeInvoiceModal());
+      window.location.reload();
     } catch (error) {
       enqueueSnackbar('Something went wrong', {
         variant: 'error'
@@ -342,12 +348,14 @@ const BillingListTable = (props) => {
                 {/* <TableCell>
                     Total
                   </TableCell> */}
-                {/* <TableCell>Status</TableCell> */}
+                <TableCell>Booking Status</TableCell>
                 <TableCell>Payment Status</TableCell>
                 <TableCell>GCash Link</TableCell>
                 <TableCell>GCash Reference No</TableCell>
                 <TableCell>Amount</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell align="right" sx={{ width: '200px' }}>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -405,7 +413,15 @@ const BillingListTable = (props) => {
                         booking.land_postal_code
                       ])}
                     </TableCell>
-                    {/* <TableCell>{getStatusLabel(order.status)}</TableCell> */}
+                    <TableCell>
+                      <SeverityPill
+                        color={
+                          severityMap[_.get(booking, 'status')] || 'warning'
+                        }
+                      >
+                        {_.get(booking, 'status')}
+                      </SeverityPill>
+                    </TableCell>
                     <TableCell>
                       <SeverityPill
                         color={
@@ -436,24 +452,25 @@ const BillingListTable = (props) => {
                           <>
                             <Tooltip title="Click this to send invoice to the client">
                               <Button
-                                variant="outlined"
-                                sx={{ mt: 1 }}
+                                sx={{ ml: 1 }}
                                 size="small"
                                 onClick={() =>
                                   initializeMakeInvoiceDialog(booking)
                                 }
                               >
-                                Make an Invoice
+                                <ReceiptLongIcon />
                               </Button>
                             </Tooltip>
-                            <Button
-                              sx={{ ml: 1, mt: 1 }}
-                              variant="outlined"
-                              size="small"
-                              onClick={() => openDialogFiles(booking)}
-                            >
-                              View Lot Survey
-                            </Button>
+                            <Tooltip title="View attached files">
+                              <Button
+                                sx={{ ml: 1 }}
+                                // variant="outlined"
+                                size="small"
+                                onClick={() => openDialogFiles(booking)}
+                              >
+                                <PreviewIcon />
+                              </Button>
+                            </Tooltip>
                           </>
                         )}
                       {booking.status === 'confirmed' && (
@@ -470,22 +487,26 @@ const BillingListTable = (props) => {
                       )}
                       {_.get(booking, 'invoice.status') == 'paid' && (
                         <>
-                          <Button
-                            variant="text"
-                            size="small"
-                            sx={{ mt: 1 }}
-                            onClick={() => handleSurveyProcessing(booking)}
-                          >
-                            Process
-                          </Button>
-                          <Button
-                            variant="text"
-                            sx={{ mt: 1 }}
-                            size="small"
-                            onClick={() => handleSurveyReceiving(booking)}
-                          >
-                            Receiving
-                          </Button>
+                          <Tooltip title="Set booking status to Process">
+                            <Button
+                              variant="text"
+                              size="small"
+                              sx={{ ml: 1 }}
+                              onClick={() => handleSurveyProcessing(booking)}
+                            >
+                              <LocalPrintshopIcon />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip title="Set booking status to Receiving">
+                            <Button
+                              variant="text"
+                              sx={{ ml: 1 }}
+                              size="small"
+                              onClick={() => handleSurveyReceiving(booking)}
+                            >
+                              <CallReceivedIcon />
+                            </Button>
+                          </Tooltip>
                         </>
                       )}
                       {/* <NextLink href="/" passHref>

@@ -38,7 +38,10 @@ const Login = () => {
       </Helmet>
       <Box
         sx={{
-          backgroundColor: 'background.default',
+          // backgroundColor: 'background.default',
+          backgroundImage: 'url(/static/login_bg.jpg)',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh'

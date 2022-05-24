@@ -25,14 +25,18 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
   Button,
   Link,
   InputAdornment
 } from '@mui/material';
+import PreviewIcon from '@mui/icons-material/Preview';
 import { useSnackbar } from 'notistack';
 import _ from 'lodash';
 import SearchIcon from 'src/icons/Search';
+import EventSeatIcon from '@mui/icons-material/EventSeat';
+import BallotIcon from '@mui/icons-material/Ballot';
 import OrderListBulkActions from './OrderListBulkActions';
 import {
   closeModal,
@@ -324,14 +328,15 @@ const BookingListTable = (props) => {
   const ActionButtons = ({ booking }) => {
     if (!booking.user_id) {
       return (
-        <Button
-          variant="outlined"
-          size="small"
-          sx={{ ml: 1, mt: 1 }}
-          onClick={() => initiaizelAssignDialog(booking)}
-        >
-          Assign to Engr
-        </Button>
+        <Tooltip title="Assign to Engineer">
+          <Button
+            size="small"
+            sx={{ ml: 1 }}
+            onClick={() => initiaizelAssignDialog(booking)}
+          >
+            <EventSeatIcon />
+          </Button>
+        </Tooltip>
       );
     }
 
@@ -341,7 +346,7 @@ const BookingListTable = (props) => {
       booking.status !== 'completed'
     ) {
       return (
-        <Button variant="text" size="small" sx={{ ml: 1, mt: 1 }}>
+        <Button variant="text" size="small" sx={{ ml: 1 }} fontSize="small">
           Assigned
         </Button>
       );
@@ -357,7 +362,7 @@ const BookingListTable = (props) => {
     };
     const response = await getAllBookings(params);
     const bookingModel = _.get(response, 'data.data[0]', null);
-    console.log(_.get(response, 'data.data[0]', null));
+
     if (bookingModel) {
       dispatch(openBookFileModal({ booking: bookingModel }));
     }
@@ -475,7 +480,9 @@ const BookingListTable = (props) => {
                   </TableCell> */}
                 {/* <TableCell>Status</TableCell> */}
                 <TableCell>Booking Status</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell align="right" sx={{ width: '300px' }}>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -552,24 +559,27 @@ const BookingListTable = (props) => {
                           Assign
                         </Button>
                       )} */}
-                      <Button
-                        sx={{ ml: 1 }}
-                        variant="outlined"
-                        size="small"
-                        onClick={() => openDialogFiles(booking)}
-                      >
-                        View Documents
-                      </Button>
+                      <Tooltip title="View attached files">
+                        <Button
+                          // sx={{ ml: 1 }}
+                          size="small"
+                          onClick={() => openDialogFiles(booking)}
+                        >
+                          <PreviewIcon />
+                        </Button>
+                      </Tooltip>
                       <ActionButtons booking={booking} />
+
                       <NextLink
                         href={`/booking/details/${booking.id}`}
                         passHref
                       >
-                        <Button variant="text" size="small" sx={{mt:2}}>
-                          Details
-                        </Button>
+                        <Tooltip title="See Booking details">
+                          <Button variant="text" size="small">
+                            <BallotIcon fontSize="small" />
+                          </Button>
+                        </Tooltip>
                       </NextLink>
-
                       {/* <NextLink href="/" passHref>
                         <Button variant="outlined">Assign</Button>
                       </NextLink> */}
