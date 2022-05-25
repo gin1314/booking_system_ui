@@ -10,6 +10,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
+import { lighten } from '@mui/material/styles';
 import { styled, alpha } from '@mui/material/styles';
 import KeyboardArrowRightRounded from '@mui/icons-material/KeyboardArrowRightRounded';
 import ContentCopyRounded from '@mui/icons-material/ContentCopyRounded';
@@ -527,7 +528,7 @@ const AppHeader = () => {
             </Box>
             <Box mt={5}>
               <Typography variant="h6" sx={{ my: 2, maxWidth: 500 }}>
-                Construction Survey
+                ** Construction Survey
               </Typography>
               <TableContainer component={Paper}>
                 <Table
@@ -574,7 +575,7 @@ const AppHeader = () => {
 
             <Box mt={5}>
               <Typography variant="h6" sx={{ my: 2, maxWidth: 500 }}>
-                Boundary Survey
+                ** Boundary Survey
               </Typography>
               <TableContainer component={Paper}>
                 <Table
@@ -584,7 +585,10 @@ const AppHeader = () => {
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell>Areas in Hectares</TableCell>
+                      <TableCell /* sx={{ backgroundColor: (theme) => lighten(theme.palette.success.main, 0.5) }} */
+                      >
+                        Areas in Hectares
+                      </TableCell>
                       <TableCell>0</TableCell>
                       <TableCell>10</TableCell>
                       <TableCell>20</TableCell>
@@ -742,6 +746,50 @@ const AppHeader = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
+            </Box>
+            <Box mt={10}>
+              <Typography
+                variant="subtitle1"
+                fontWeight={700}
+                sx={{ my: 2, maxWidth: 500 }}
+              >
+                ** Notes
+              </Typography>
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight={500}
+                  sx={{ my: 2, maxWidth: 600 }}
+                >
+                  Here, if your property's land area is, say 1,000 sq.m., the
+                  cost for doing a Relocation Survey will be: PHP 40,000.00
+                </Typography>
+              </Box>
+              <Box>
+                <img src="/static/location_survey_notes2.png" width={900} />
+              </Box>
+              <Box mt={2}>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight={500}
+                  sx={{ my: 2, maxWidth: 600 }}
+                >
+                  Meanwhile, for a property whose land area is 23 ha, the cost
+                  will be PHP 380,000.00
+                </Typography>
+              </Box>
+              <Box mt={2}>
+                <img src="/static/location_survey_notes1.png" width={900} />
+              </Box>
+              <Box mt={2}>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight={500}
+                  sx={{ my: 2, maxWidth: 600 }}
+                >
+                  For area in excess of 70 hectares, add PHP 4,000 / hectare
+                </Typography>
+              </Box>
             </Box>
           </Container>
         </Box>
